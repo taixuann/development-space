@@ -11,5 +11,19 @@
         ]
       }
     }
-  ]
+  ],
+  "mcp": {
+    "servers": {
+      "xerj": {
+        "type": "local",
+        "command": [
+          "/Users/tai/.local/bin/xerj",
+          "mcp"
+        ],
+        "env": {
+          "XERJ_URL": "http://localhost:9200"
+        }
+      }
+    }
+  }
 }

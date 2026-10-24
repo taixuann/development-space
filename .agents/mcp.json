@@ -1,4 +1,5 @@
 {
+  "$schema": "https://json.schemastore.org/mcp.json",
   "mcpServers": {
     "xerj": {
       "command": "/Users/tai/.local/bin/xerj",
