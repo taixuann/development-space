@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "finalize",
+  "status": "pass",
+  "type": "workflow",
+  "quality": "showcase",
+  "specification": {
+    "path": "/Users/tai/development-space/.archify/workflow-automation-ai-triage-flow-20261024-233900/candidate.json",
+    "sha256": "8c410b6764844c3462780cc060b29d6231437fa2e11d15e09c0c37a1a26a2918",
+    "bytes": 4688
+  },
+  "artifact": {
+    "path": "/Users/tai/development-space/.archify/workflow-automation-ai-triage-flow-20261024-233900/workflow.html",
+    "sha256": "d3d2898fc3bb9a4b4881815a269424526a64f9e6c05166990ab60177491adb0f",
+    "bytes": 825579
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "pass"
+  },
+  "diagnostics": [],
+  "diagnosticSummary": {
+    "total": 0,
+    "shown": 0,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "/Users/tai/development-space/.archify/workflow-automation-ai-triage-flow-20261024-233900/workflow.finalize.json",
+    "summaryReceipt": "/Users/tai/development-space/.archify/workflow-automation-ai-triage-flow-20261024-233900/workflow.finalize-summary.json",
+    "browserCheckReceipt": "/Users/tai/development-space/.archify/workflow-automation-ai-triage-flow-20261024-233900/workflow.browser-check.json"
+  },
+  "update": {
+    "status": "current",
+    "installedVersion": "3.2.0",
+    "availableVersion": "3.2.0",
+    "releaseNotes": null,
+    "checkedAt": "2026-10-24T15:27:13.769Z",
+    "source": "cache",
+    "noticeRequired": false,
+    "noticeText": null
+  },
+  "visualReview": "not-requested",
+  "durationMs": 8980,
+  "browserCheck": {
+    "requested": true,
+    "ran": true
+  }
+}

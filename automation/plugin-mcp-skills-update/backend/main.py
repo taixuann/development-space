@@ -16,6 +16,18 @@ CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 if CURRENT_DIR not in sys.path:
     sys.path.insert(0, CURRENT_DIR)
 
+# Add ticket-submit skill script directory to sys.path
+TICKET_SUBMIT_DIR = os.path.expanduser("~/.agents/skills/ticket-submit/scripts")
+if TICKET_SUBMIT_DIR not in sys.path and os.path.isdir(TICKET_SUBMIT_DIR):
+    sys.path.insert(0, TICKET_SUBMIT_DIR)
+
+try:
+    from ticket_submit import submit_or_update_ticket
+except ImportError:
+    # Soft fallback if skill script is missing
+    def submit_or_update_ticket(**kwargs):  # type: ignore
+        return {"success": False, "action": "failed", "error": "ticket_submit module not found"}
+
 from mcp_syncer import check_and_sync_mcp
 from plugins_checker import check_superpowers_plugin
 from skills_updater import update_skills
@@ -34,6 +46,55 @@ def write_atomic_json(filepath: str, data: dict) -> None:
     with os.fdopen(temp_fd, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2)
     os.replace(temp_path, filepath)
+
+
+def cleanup_old_runs(report_root: str, max_age_days: int = 30) -> int:
+    """Purge run records and rotated logs older than max_age_days.
+    
+    latest-result.json, active logs, and git-tracked files are strictly preserved.
+    """
+    cutoff_time = time.time() - (max_age_days * 86400)
+    deleted_count = 0
+
+    protected_basenames = {
+        "latest-result.json",
+        "stdout.log",
+        "stderr.log",
+        ".gitkeep",
+        ".gitignore",
+    }
+
+    # 1. Inspect runs directory
+    runs_dir = os.path.join(report_root, "runs")
+    if os.path.isdir(runs_dir):
+        for fname in os.listdir(runs_dir):
+            if fname in protected_basenames:
+                continue
+            fpath = os.path.join(runs_dir, fname)
+            if os.path.isfile(fpath):
+                try:
+                    if os.path.getmtime(fpath) < cutoff_time:
+                        os.remove(fpath)
+                        deleted_count += 1
+                except Exception:
+                    pass
+
+    # 2. Inspect rotated log snapshots in report_root
+    if os.path.isdir(report_root):
+        for fname in os.listdir(report_root):
+            if fname in protected_basenames:
+                continue
+            if fname.startswith("stdout.log.") or fname.startswith("stderr.log.") or fname.startswith("run_"):
+                fpath = os.path.join(report_root, fname)
+                if os.path.isfile(fpath):
+                    try:
+                        if os.path.getmtime(fpath) < cutoff_time:
+                            os.remove(fpath)
+                            deleted_count += 1
+                    except Exception:
+                        pass
+
+    return deleted_count
 
 
 def run_maintenance(
@@ -71,6 +132,11 @@ def run_maintenance(
             pass
 
     log(f"=== Starting maintenance {run_id} (dry_run={dry_run}) ===")
+
+    # Enforce 30-day retention
+    cleaned = cleanup_old_runs(report_root, max_age_days=30)
+    if cleaned > 0:
+        log(f"Retention: purged {cleaned} run/log file(s) older than 30 days.")
 
     if dry_run:
         log("DRY RUN: skipping mutations.")
@@ -116,6 +182,30 @@ def run_maintenance(
             "plugins": plugins_res,
             "mcp": mcp_res,
         }
+
+        # Incident Escalation to Notion via ticket-submit on failure
+        if not all_ok:
+            error_reasons = []
+            if not skills_res["success"]:
+                error_reasons.append(f"Skills: {skills_res.get('output', 'Unknown error')}")
+            if not plugins_res["success"]:
+                error_reasons.append(f"Plugins: {plugins_res.get('error', 'Unknown error')}")
+            if not mcp_res["success"]:
+                error_reasons.append(f"MCP: {mcp_res.get('error', 'Unknown error')}")
+
+            err_body = "\n".join(error_reasons)
+            log("Escalating failure to Notion Agent Tickets via ticket-submit...")
+            ticket_res = submit_or_update_ticket(
+                title="[Auto-Sync] Maintenance failure in development-space",
+                target_space="Development",
+                system_component="Automations & Runtime",
+                request_type="Fix",
+                status="Blocked",
+                current_step="Daily maintenance failure in development-space",
+                body=err_body,
+                signature="[Auto-Sync] Maintenance failure in development-space",
+            )
+            log(f"Notion ticket escalation result: {ticket_res}")
 
     duration = time.time() - t0
     end_dt = datetime.datetime.now(datetime.timezone.utc)

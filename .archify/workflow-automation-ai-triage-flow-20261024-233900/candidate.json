@@ -1,0 +1,65 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "AI-Assisted Automation Triage & Human Review Workflow",
+    "subtitle": "Autonomous diagnosis and plan generation on failure with safe human review gate",
+    "animation": "trace",
+    "visual_preset": "signal-flow",
+    "quality_profile": "showcase",
+    "output": ".archify/workflow-automation-ai-triage-flow-20261024-233900/workflow.html"
+  },
+  "lanes": [
+    { "id": "cron", "label": "Launchd Runtime" },
+    { "id": "opencode", "label": "OpenCode Triage Worker" },
+    { "id": "subagent", "label": "Subagent Gatekeeper", "variant": "exception" },
+    { "id": "notion", "label": "Notion Agent Tickets" },
+    { "id": "human", "label": "Owner / Developer" }
+  ],
+  "phases": [
+    { "id": "phase1", "label": "1. Scheduled Run", "fromCol": 0, "toCol": 1 },
+    { "id": "phase2", "label": "2. Failure Triage & Planning", "fromCol": 2, "toCol": 3, "variant": "emphasis" },
+    { "id": "phase3", "label": "3. Review & Escalation", "fromCol": 4, "toCol": 4, "variant": "security" },
+    { "id": "phase4", "label": "4. Human Gate & Execution", "fromCol": 5, "toCol": 5, "variant": "emphasis" }
+  ],
+  "groups": [
+    { "id": "cron_group", "label": "Daily Maintenance", "lane": "cron", "fromCol": 0, "toCol": 1, "variant": "dashed" },
+    { "id": "ai_triage", "label": "Autonomous AI Analysis", "lane": "opencode", "fromCol": 2, "toCol": 3, "variant": "emphasis" },
+    { "id": "gate_group", "label": "Quality Gate", "lane": "subagent", "fromCol": 4, "toCol": 4, "variant": "security" },
+    { "id": "escalation_group", "label": "Incident Reporting", "lane": "notion", "fromCol": 4, "toCol": 4, "variant": "dashed" },
+    { "id": "human_action", "label": "Decision & Action", "lane": "human", "fromCol": 5, "toCol": 5, "variant": "emphasis" }
+  ],
+  "mainPath": ["trigger", "execute", "triage_runner", "draft_plan", "gate_review", "push_ticket", "human_gate", "exec_fix"],
+  "nodes": [
+    { "id": "trigger", "lane": "cron", "col": 0, "type": "backend", "label": "03:00 Daily Trigger", "sublabel": "launchd scheduler", "width": 140 },
+    { "id": "execute", "lane": "cron", "col": 1, "type": "security", "label": "Run & Catch Error", "sublabel": "skills, plugins, mcp", "width": 140 },
+    { "id": "triage_runner", "lane": "opencode", "col": 2, "type": "backend", "label": "OpenCode Triage", "sublabel": "session: maintenance-triage", "tag": "cd development-space", "width": 150 },
+    { "id": "draft_plan", "lane": "opencode", "col": 3, "type": "backend", "label": "Author Action Plan", "sublabel": "/writing-plans in docs/", "tag": "root cause + steps", "width": 150 },
+    { "id": "gate_review", "lane": "subagent", "col": 4, "type": "security", "label": "Subagent Review", "sublabel": "sanity check plan", "tag": "review gate", "width": 140 },
+    { "id": "push_ticket", "lane": "notion", "col": 4, "type": "database", "label": "Ticket-Submit", "sublabel": "ntn api create / comment", "tag": "Status: Human review", "width": 150 },
+    { "id": "human_gate", "lane": "human", "col": 5, "type": "external", "label": "Owner Approval", "sublabel": "review plan on Notion", "width": 140 },
+    { "id": "exec_fix", "lane": "opencode", "col": 5, "type": "backend", "label": "Execute Approved Fix", "sublabel": "/executing-plans on worktree", "width": 150 }
+  ],
+  "edges": [
+    { "id": "e_trig_exec", "from": "trigger", "to": "execute", "variant": "default" },
+    { "id": "e_fail_triage", "from": "execute", "to": "triage_runner", "label": "error event", "variant": "security" },
+    { "id": "e_triage_plan", "from": "triage_runner", "to": "draft_plan", "label": "diagnose & plan", "variant": "emphasis" },
+    { "id": "e_plan_gate", "from": "draft_plan", "to": "gate_review", "label": "draft plan", "variant": "default" },
+    { "id": "e_gate_ticket", "from": "gate_review", "to": "push_ticket", "label": "reviewed plan", "variant": "emphasis" },
+    { "id": "e_ticket_human", "from": "push_ticket", "to": "human_gate", "label": "Notion notification", "variant": "emphasis" },
+    { "id": "e_human_exec", "from": "human_gate", "to": "exec_fix", "label": "user approves", "variant": "emphasis" }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Safety & Autonomy Contract",
+      "items": [
+        "Zero blind code mutations on master during background runs",
+        "OpenCode diagnoses error from workspace root and drafts formal plan",
+        "Subagent checks plan before uploading to Notion Agent Tickets",
+        "Status defaults to 'Human review' with root cause and fix plan attached",
+        "Owner reviews on Notion, then executes approved fix with high confidence"
+      ]
+    }
+  ]
+}

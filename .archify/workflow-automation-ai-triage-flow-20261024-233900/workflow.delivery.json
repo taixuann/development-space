@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "ea553259-c8a9-429e-81f0-9d4b3cb6cd98",
+  "status": "current",
+  "command": "deliver",
+  "type": "workflow",
+  "input": "/Users/tai/development-space/.archify/workflow-automation-ai-triage-flow-20261024-233900/candidate.json",
+  "output": "/Users/tai/development-space/.archify/workflow-automation-ai-triage-flow-20261024-233900/workflow.html",
+  "specification": {
+    "sha256": "8c410b6764844c3462780cc060b29d6231437fa2e11d15e09c0c37a1a26a2918",
+    "bytes": 4688
+  },
+  "artifact": {
+    "sha256": "d3d2898fc3bb9a4b4881815a269424526a64f9e6c05166990ab60177491adb0f",
+    "bytes": 825579
+  }
+}
