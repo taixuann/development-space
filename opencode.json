@@ -1,9 +1,15 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "model": "omniroute/coding",
-  "agent": {
-    "build": {
-      "model": "omniroute/coding"
+  "model": "opencode-go/deepseek-v4.1-flash",
+  "plugins": [
+    {
+      "package": "opencode-fallback-model@0.1.0",
+      "options": {
+        "models": [
+          "opencode-go/deepseek-v4.1-flash",
+          "opencode-go/beam-free"
+        ]
+      }
     }
-  }
+  ]
 }
