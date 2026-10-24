@@ -3,6 +3,7 @@
 set -euo pipefail
 
 SCRIPT="/Users/tai/development-space/automation/plugin-mcp-skills-update/update.sh"
+REPORT_ROOT="/Users/tai/.agents/automation/development-space-update-runtime/logs"
 
 if [ ! -x "$SCRIPT" ]; then
   echo "FAIL: $SCRIPT is not executable"
@@ -13,35 +14,24 @@ fi
 OUTPUT=$("$SCRIPT" --dry-run)
 echo "$OUTPUT"
 
-if ! echo "$OUTPUT" | grep -q "DRY RUN COMPLETE"; then
-  echo "FAIL: Expected 'DRY RUN COMPLETE' in dry-run output"
+if ! echo "$OUTPUT" | grep -q "DRY RUN"; then
+  echo "FAIL: Expected 'DRY RUN' in dry-run output"
   exit 1
 fi
 
 # Run a live test run to verify real log generation
 "$SCRIPT"
 
-TODAY=$(date "+%Y-%m-%d")
-LOG_FILE="/Users/tai/development-space/automation/plugin-mcp-skills-update/logs/update-${TODAY}.log"
+LATEST_RESULT="$REPORT_ROOT/latest-result.json"
 
-if [ ! -f "$LOG_FILE" ]; then
-  echo "FAIL: Log file $LOG_FILE was not generated"
+if [ ! -f "$LATEST_RESULT" ]; then
+  echo "FAIL: Result file $LATEST_RESULT was not generated"
   exit 1
 fi
 
-if ! grep -q "Skills update:" "$LOG_FILE"; then
-  echo "FAIL: Log file does not contain skills update status"
+if ! grep -q '"outcome": "success"' "$LATEST_RESULT"; then
+  echo "FAIL: Result file does not show outcome: success"
   exit 1
 fi
 
-if ! grep -q "MCP Xerj check:" "$LOG_FILE"; then
-  echo "FAIL: Log file does not contain MCP xerj check status"
-  exit 1
-fi
-
-if ! grep -q "Superpowers check:" "$LOG_FILE"; then
-  echo "FAIL: Log file does not contain Superpowers plugin check status"
-  exit 1
-fi
-
-echo "PASS: Update script executed and generated structured logs"
+echo "PASS: Update script executed and generated structured logs in report root"

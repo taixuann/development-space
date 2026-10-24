@@ -1,31 +1,71 @@
-# Daily Update Automation: Skills, Superpowers & MCP Xerj
+# Daily Plugin, MCP & Skills Maintenance
 
-Automated daily maintenance service for `development-space`.
+Daily automated maintenance service for `development-space`. Keeps installed skills, Superpowers plugin, and local MCP Xerj synchronized and healthy.
 
-## Responsibilities
-1. **Skills Update**: Executes `npx skills update -p -y` to keep project skills in sync.
-2. **Superpowers Plugin Check**: Verifies latest upstream git commit of `https://github.com/obra/superpowers.git`.
-3. **MCP Xerj Sync**: Asserts local `xerj` binary health and verifies sync across `.agents/mcp.json`, `.opencode/opencode.json`, and `.codex/config.toml`.
-4. **Structured Logging**: Pure log-focused execution outputting to `logs/update-YYYY-MM-DD.log`.
+| Field | Value |
+| --- | --- |
+| Label | `com.tai.development-space.update` |
+| Source owner | Tool-owned (`/Users/tai/development-space/automation/plugin-mcp-skills-update`) |
+| Report root | `/Users/tai/.agents/automation/development-space-update-runtime/logs` |
+| Installed plist | `~/Library/LaunchAgents/com.tai.development-space.update.plist` |
 
-## Usage
-- **Manual run (live)**:
+## Schedule and time
+
+Scheduled daily at 03:00 (Asia/Ho_Chi_Minh). The installed plist is the only authority for the trigger; this file describes it.
+
+Wall-clock times use the Mac's local timezone at fire time. `StartCalendarInterval` fires late after sleep; a time that passes while the Mac is asleep runs when the Mac wakes.
+
+## Runtime
+
+The job calls Python 3 directly:
+```bash
+/Library/Frameworks/Python.framework/Versions/3.13/bin/python3 \
+  /Users/tai/development-space/automation/plugin-mcp-skills-update/backend/main.py \
+  --report-root /Users/tai/.agents/automation/development-space-update-runtime/logs
+```
+
+`PATH` and `HOME` come from the plist `EnvironmentVariables`. The job loads no `.env`, no shell profile, and no version-manager init.
+
+## Reports and retention
+
+Reports go to `/Users/tai/.agents/automation/development-space-update-runtime/logs`:
+
+| File | Purpose |
+| --- | --- |
+| `stdout.log` | Process output and one-line run events |
+| `stderr.log` | Diagnostics and tracebacks |
+| `latest-result.json` | Last terminal outcome, written atomically |
+
+A run record holds `run_id`, label, start and end time, outcome, exit code, duration, and component details.
+
+## Outcomes
+
+| Outcome | Meaning |
+| --- | --- |
+| `success` | All 3 phases (Skills, Superpowers, MCP Xerj) completed successfully with exit code 0. |
+| `cached` | Dry run or no changes needed. |
+| `skipped_locked` | Another run held the lock. |
+| `failed` | One or more components failed or reported drift. Exit code nonzero. |
+
+## Quick commands
+
+- **Run manually (live)**:
   ```bash
-  ./update.sh
+  python3 backend/main.py --report-root /Users/tai/.agents/automation/development-space-update-runtime/logs
   ```
-- **Manual run (dry run)**:
+- **Run dry-run**:
   ```bash
-  ./update.sh --dry-run
+  python3 backend/main.py --report-root /tmp/test-runtime/logs --dry-run
   ```
-- **Install as daily launchd service (runs daily at 03:00)**:
+- **Install daemon**:
   ```bash
   ./install-launchd.sh
   ```
-- **Check service status**:
+- **Check status**:
   ```bash
   ./status.sh
   ```
-- **Uninstall service**:
+- **Run verification**:
   ```bash
-  ./uninstall-launchd.sh
+  python3 ~/.agents/skills/launchd-automation/scripts/verify_automation.py . --static --report-root /Users/tai/.agents/automation/development-space-update-runtime/logs
   ```

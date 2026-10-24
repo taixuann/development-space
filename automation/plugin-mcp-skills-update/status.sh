@@ -3,10 +3,9 @@
 set -euo pipefail
 
 LABEL="com.tai.development-space.update"
-PLIST_NAME="${LABEL}.plist"
 TARGET_DIR="$HOME/Library/LaunchAgents"
-TARGET_PLIST="$TARGET_DIR/${PLIST_NAME}"
-LOGS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/logs"
+TARGET_PLIST="$TARGET_DIR/${LABEL}.plist"
+REPORT_ROOT="/Users/tai/.agents/automation/development-space-update-runtime/logs"
 
 echo "=== Launchd service: $LABEL ==="
 if [ -f "$TARGET_PLIST" ]; then
@@ -22,9 +21,9 @@ else
   echo "○ Service is not loaded in launchctl"
 fi
 
-echo "--- Recent update logs ---"
-if [ -d "$LOGS_DIR" ]; then
-  ls -lh "$LOGS_DIR"/*.log 2>/dev/null | tail -n 5 || echo "No logs generated yet."
+echo "--- Recent outcome (latest-result.json) ---"
+if [ -f "$REPORT_ROOT/latest-result.json" ]; then
+  cat "$REPORT_ROOT/latest-result.json"
 else
-  echo "Logs directory does not exist."
+  echo "No latest-result.json found yet at $REPORT_ROOT"
 fi

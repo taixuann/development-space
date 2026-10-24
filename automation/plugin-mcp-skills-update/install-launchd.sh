@@ -3,12 +3,12 @@
 set -euo pipefail
 
 LABEL="com.tai.development-space.update"
-PLIST_NAME="${LABEL}.plist"
-SOURCE_PLIST="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/${PLIST_NAME}"
+SOURCE_PLIST="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/launchd.plist"
 TARGET_DIR="$HOME/Library/LaunchAgents"
-TARGET_PLIST="$TARGET_DIR/${PLIST_NAME}"
+TARGET_PLIST="$TARGET_DIR/${LABEL}.plist"
+REPORT_ROOT="/Users/tai/.agents/automation/development-space-update-runtime/logs"
 
-mkdir -p "$TARGET_DIR"
+mkdir -p "$TARGET_DIR" "$REPORT_ROOT"
 
 echo "Installing $LABEL into $TARGET_DIR..."
 cp -f "$SOURCE_PLIST" "$TARGET_PLIST"

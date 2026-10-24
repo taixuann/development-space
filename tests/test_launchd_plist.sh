@@ -3,10 +3,11 @@
 set -euo pipefail
 
 AUTOMATION_DIR="/Users/tai/development-space/automation/plugin-mcp-skills-update"
-PLIST_FILE="$AUTOMATION_DIR/com.tai.development-space.update.plist"
+PLIST_FILE="$AUTOMATION_DIR/launchd.plist"
 INSTALL_SCRIPT="$AUTOMATION_DIR/install-launchd.sh"
 UNINSTALL_SCRIPT="$AUTOMATION_DIR/uninstall-launchd.sh"
 STATUS_SCRIPT="$AUTOMATION_DIR/status.sh"
+REPORT_ROOT="/Users/tai/.agents/automation/development-space-update-runtime/logs"
 
 if [ ! -f "$PLIST_FILE" ]; then
   echo "FAIL: $PLIST_FILE does not exist"
@@ -27,12 +28,7 @@ for script in "$INSTALL_SCRIPT" "$UNINSTALL_SCRIPT" "$STATUS_SCRIPT"; do
   fi
 done
 
-# 3. Test status script (should report registered or not registered without error)
-STATUS_OUTPUT=$("$STATUS_SCRIPT")
-echo "$STATUS_OUTPUT"
-if ! echo "$STATUS_OUTPUT" | grep -q "Launchd service:"; then
-  echo "FAIL: status.sh did not produce expected header"
-  exit 1
-fi
+# 3. Run launchd-automation verify script
+python3 ~/.agents/skills/launchd-automation/scripts/verify_automation.py "$AUTOMATION_DIR" --static --report-root "$REPORT_ROOT"
 
-echo "PASS: Launchd plist and lifecycle scripts are valid"
+echo "PASS: Launchd plist and lifecycle scripts conform to launchd-automation contract"
