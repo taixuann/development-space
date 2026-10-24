@@ -6,7 +6,7 @@ Daily automated maintenance service for `development-space`. Keeps installed ski
 | --- | --- |
 | Label | `com.tai.development-space.update` |
 | Source owner | Tool-owned (`/Users/tai/development-space/automation/plugin-mcp-skills-update`) |
-| Report root | `/Users/tai/.agents/automation/development-space-update-runtime/logs` |
+| Report root | Space-contained (`/Users/tai/development-space/automation/plugin-mcp-skills-update/logs`) |
 | Installed plist | `~/Library/LaunchAgents/com.tai.development-space.update.plist` |
 
 ## Schedule and time
@@ -19,16 +19,16 @@ Wall-clock times use the Mac's local timezone at fire time. `StartCalendarInterv
 
 The job calls Python 3 directly:
 ```bash
-/Library/Frameworks/Python.framework/Versions/3.13/bin/python3 \
+/opt/miniconda3/envs/core/bin/python3 \
   /Users/tai/development-space/automation/plugin-mcp-skills-update/backend/main.py \
-  --report-root /Users/tai/.agents/automation/development-space-update-runtime/logs
+  --report-root /Users/tai/development-space/automation/plugin-mcp-skills-update/logs
 ```
 
 `PATH` and `HOME` come from the plist `EnvironmentVariables`. The job loads no `.env`, no shell profile, and no version-manager init.
 
 ## Reports and retention
 
-Reports go to `/Users/tai/.agents/automation/development-space-update-runtime/logs`:
+Reports are contained locally in the workspace at `automation/plugin-mcp-skills-update/logs`:
 
 | File | Purpose |
 | --- | --- |
@@ -36,7 +36,7 @@ Reports go to `/Users/tai/.agents/automation/development-space-update-runtime/lo
 | `stderr.log` | Diagnostics and tracebacks |
 | `latest-result.json` | Last terminal outcome, written atomically |
 
-A run record holds `run_id`, label, start and end time, outcome, exit code, duration, and component details.
+A run record holds `run_id`, label, start and end time, outcome, exit code, duration, and component details. Git ignores `*.log`, `latest-result.json`, and `runs/` via local `.gitignore` to keep git status clean.
 
 ## Outcomes
 
@@ -51,11 +51,11 @@ A run record holds `run_id`, label, start and end time, outcome, exit code, dura
 
 - **Run manually (live)**:
   ```bash
-  python3 backend/main.py --report-root /Users/tai/.agents/automation/development-space-update-runtime/logs
+  ./update.sh
   ```
 - **Run dry-run**:
   ```bash
-  python3 backend/main.py --report-root /tmp/test-runtime/logs --dry-run
+  ./update.sh --dry-run
   ```
 - **Install daemon**:
   ```bash
@@ -67,5 +67,5 @@ A run record holds `run_id`, label, start and end time, outcome, exit code, dura
   ```
 - **Run verification**:
   ```bash
-  python3 ~/.agents/skills/launchd-automation/scripts/verify_automation.py . --static --report-root /Users/tai/.agents/automation/development-space-update-runtime/logs
+  python3 ~/.agents/skills/launchd-automation/scripts/verify_automation.py . --static --report-root logs
   ```

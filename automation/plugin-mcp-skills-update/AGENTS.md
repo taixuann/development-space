@@ -5,8 +5,8 @@ Read `README.md` first. It owns the schedule, outcomes, and recovery.
 ## Ownership
 
 - Source repository: `/Users/tai/development-space`. Layout: tool.
-- Source folder: `/Users/tai/development-space/automation/plugin-mcp-skills-update`. It owns `launchd.plist`, `backend/`, and the runbook.
-- Report root: `/Users/tai/.agents/automation/development-space-update-runtime/logs`. Runtime output only; keep it out of the source folder and out of Git.
+- Source folder: `/Users/tai/development-space/automation/plugin-mcp-skills-update`. It owns `launchd.plist`, `backend/`, `logs/`, and the runbook.
+- Report root: `/Users/tai/development-space/automation/plugin-mcp-skills-update/logs`. Space-contained layout; `.gitignore` ignores `*.log`, `latest-result.json`, and `runs/`.
 
 ## Boundaries
 
@@ -18,6 +18,6 @@ Read `README.md` first. It owns the schedule, outcomes, and recovery.
 ## Checks before reporting work complete
 
 1. `plutil -lint launchd.plist` returns OK.
-2. `verify_automation.py "/Users/tai/development-space/automation/plugin-mcp-skills-update" --static --report-root "/Users/tai/.agents/automation/development-space-update-runtime/logs"` exits 0.
+2. `verify_automation.py "/Users/tai/development-space/automation/plugin-mcp-skills-update" --static --report-root "/Users/tai/development-space/automation/plugin-mcp-skills-update/logs"` exits 0.
 3. Unit tests in `tests/test_backend.py` exit 0.
-4. A live check shows a fresh terminal outcome in `/Users/tai/.agents/automation/development-space-update-runtime/logs/latest-result.json`.
+4. A live check shows a fresh terminal outcome in `/Users/tai/development-space/automation/plugin-mcp-skills-update/logs/latest-result.json`.

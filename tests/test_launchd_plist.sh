@@ -7,7 +7,7 @@ PLIST_FILE="$AUTOMATION_DIR/launchd.plist"
 INSTALL_SCRIPT="$AUTOMATION_DIR/install-launchd.sh"
 UNINSTALL_SCRIPT="$AUTOMATION_DIR/uninstall-launchd.sh"
 STATUS_SCRIPT="$AUTOMATION_DIR/status.sh"
-REPORT_ROOT="/Users/tai/.agents/automation/development-space-update-runtime/logs"
+REPORT_ROOT="$AUTOMATION_DIR/logs"
 
 if [ ! -f "$PLIST_FILE" ]; then
   echo "FAIL: $PLIST_FILE does not exist"
@@ -31,4 +31,4 @@ done
 # 3. Run launchd-automation verify script
 python3 ~/.agents/skills/launchd-automation/scripts/verify_automation.py "$AUTOMATION_DIR" --static --report-root "$REPORT_ROOT"
 
-echo "PASS: Launchd plist and lifecycle scripts conform to launchd-automation contract"
+echo "PASS: Launchd plist and lifecycle scripts conform to launchd-automation contract with space-contained logs"

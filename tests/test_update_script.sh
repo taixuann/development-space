@@ -3,7 +3,7 @@
 set -euo pipefail
 
 SCRIPT="/Users/tai/development-space/automation/plugin-mcp-skills-update/update.sh"
-REPORT_ROOT="/Users/tai/.agents/automation/development-space-update-runtime/logs"
+REPORT_ROOT="/Users/tai/development-space/automation/plugin-mcp-skills-update/logs"
 
 if [ ! -x "$SCRIPT" ]; then
   echo "FAIL: $SCRIPT is not executable"
@@ -34,4 +34,4 @@ if ! grep -q '"outcome": "success"' "$LATEST_RESULT"; then
   exit 1
 fi
 
-echo "PASS: Update script executed and generated structured logs in report root"
+echo "PASS: Update script executed and generated structured logs in space logs/"

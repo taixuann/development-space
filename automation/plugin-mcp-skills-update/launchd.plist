@@ -9,7 +9,7 @@
         <string>/opt/miniconda3/envs/core/bin/python3</string>
         <string>/Users/tai/development-space/automation/plugin-mcp-skills-update/backend/main.py</string>
         <string>--report-root</string>
-        <string>/Users/tai/.agents/automation/development-space-update-runtime/logs</string>
+        <string>/Users/tai/development-space/automation/plugin-mcp-skills-update/logs</string>
     </array>
     <key>StartCalendarInterval</key>
     <dict>
@@ -19,9 +19,9 @@
         <integer>0</integer>
     </dict>
     <key>StandardOutPath</key>
-    <string>/Users/tai/.agents/automation/development-space-update-runtime/logs/stdout.log</string>
+    <string>/Users/tai/development-space/automation/plugin-mcp-skills-update/logs/stdout.log</string>
     <key>StandardErrorPath</key>
-    <string>/Users/tai/.agents/automation/development-space-update-runtime/logs/stderr.log</string>
+    <string>/Users/tai/development-space/automation/plugin-mcp-skills-update/logs/stderr.log</string>
     <key>EnvironmentVariables</key>
     <dict>
         <key>PATH</key>

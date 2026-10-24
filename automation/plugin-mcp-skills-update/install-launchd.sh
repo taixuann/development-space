@@ -3,10 +3,11 @@
 set -euo pipefail
 
 LABEL="com.tai.development-space.update"
-SOURCE_PLIST="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/launchd.plist"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SOURCE_PLIST="$SCRIPT_DIR/launchd.plist"
 TARGET_DIR="$HOME/Library/LaunchAgents"
 TARGET_PLIST="$TARGET_DIR/${LABEL}.plist"
-REPORT_ROOT="/Users/tai/.agents/automation/development-space-update-runtime/logs"
+REPORT_ROOT="$SCRIPT_DIR/logs"
 
 mkdir -p "$TARGET_DIR" "$REPORT_ROOT"
 
