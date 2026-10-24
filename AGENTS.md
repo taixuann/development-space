@@ -68,7 +68,6 @@ Select the narrowest local skill that owns the current operation:
 - `swiftui-expert-skill`: write SwiftUI code (only for macOS/iOS tools).
 - `playwright-cli`: prove web UI behavior in a real browser.
 - `gh-fix-ci`: repair a failed check on an existing PR.
-- `gh-address-comments`: address review threads on an open GitHub PR.
 
 Only for UI work, load `impeccable`. Only for SwiftUI work, load `swiftui-expert-skill`.
 Only for command-line behavior contracts, load `cli-developer`.

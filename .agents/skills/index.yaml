@@ -48,12 +48,8 @@ tool_layer_mapping:
   git_and_ci:
     folder: "Repository-level PR and CI workflow"
     specialist_skills:
-      - name: "git-guardrails-claude-code"
-        role: "Block destructive git operations"
       - name: "gh-fix-ci"
         role: "Fetch and repair failing GitHub Actions logs"
-      - name: "gh-address-comments"
-        role: "Address PR review comments via gh CLI"
 
   retrieval:
     folder: "Global search across tools"

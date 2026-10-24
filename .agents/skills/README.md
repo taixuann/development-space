@@ -24,7 +24,7 @@ graph LR
         FrontendSkills["impeccable (Web)<br/>swiftui-expert-skill (Apple)"]
         TestSkills["playwright-cli (E2E)<br/>superpowers:TDD"]
         ScaffoldSkill["tool-scaffolding"]
-        GitSkills["git-guardrails<br/>gh-fix-ci<br/>gh-address-comments"]
+        GitSkills["gh-fix-ci"]
     end
 
     BackendFolder --> BackendSkills
@@ -42,7 +42,7 @@ graph LR
 | **`frontend/`** | `impeccable`<br/>`swiftui-expert-skill` | **Web UI**: Information architecture, typography, responsiveness, UI polish.<br/>**Native Apple UI**: SwiftUI state `@Observable`, platform views, Liquid Glass. |
 | **`tests/`** | `superpowers:TDD`<br/>`playwright-cli` | **Unit/Integration**: Viết test trước bằng TDD.<br/>**Browser E2E**: Tự động hóa kiểm thử trình duyệt cho web tools. |
 | **`tool root/`** | `tool-scaffolding` | Khởi tạo repo độc lập, tạo `pyproject.toml`, dập khuôn chuẩn thư mục. |
-| **`Git & CI`** | `git-guardrails`<br/>`gh-fix-ci`<br/>`gh-address-comments` | Chặn lệnh phá hủy git, đọc/sửa lỗi CI GitHub Actions, trả lời PR comments tự động. |
+| **`Git & CI`** | `gh-fix-ci` | Đọc và sửa lỗi CI GitHub Actions tự động qua `gh` CLI. |
 | **Toàn cục** | `xerj` & `xerj-hub` | Tìm kiếm mã nguồn và định nghĩa AST siêu tốc, không đốt token. |
 
 ---
