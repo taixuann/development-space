@@ -1,0 +1,6 @@
+[mcp_servers.xerj]
+command = "/Users/tai/.local/bin/xerj"
+args = ["mcp"]
+
+[mcp_servers.xerj.env]
+XERJ_URL = "http://localhost:9200"

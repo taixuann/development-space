@@ -1,0 +1,64 @@
+version: 1
+updated_at: "2026-10-24"
+workshop: "development-space"
+
+# Mapping between Tool Folders (docs/standard-tool-layout.md) and Owning Specialist Skills
+tool_layer_mapping:
+  backend:
+    folder: "tools/<space>/<tool-name>/backend/"
+    mandatory: true
+    responsibility: "Core application logic and public CLI surface"
+    specialist_skills:
+      - name: "cli-developer"
+        role: "Design flags, non-interactive execution, stdout/stderr, exit codes"
+      - name: "codebase-design"
+        role: "Enforce deep modules and minimize interface complexity"
+
+  frontend:
+    folder: "tools/<space>/<tool-name>/frontend/"
+    mandatory: false
+    responsibility: "Visual web interfaces, dashboards, or native desktop/mobile apps"
+    specialist_skills:
+      - name: "impeccable"
+        condition: "Web/HTML/React UI"
+        role: "Information architecture, typography, responsiveness, UI polish"
+      - name: "swiftui-expert-skill"
+        condition: "Swift / macOS / iOS native UI"
+        role: "SwiftUI architecture, @Observable state, Liquid Glass, platform views"
+
+  tests:
+    folder: "tools/<space>/<tool-name>/tests/"
+    mandatory: true
+    responsibility: "Runnable verification checks, unit, integration, and E2E tests"
+    specialist_skills:
+      - name: "superpowers:test-driven-development"
+        role: "Test-first behavior verification and test fixtures"
+      - name: "playwright-cli"
+        condition: "Web frontend E2E browser automation"
+        role: "Automated browser interaction and regression testing"
+
+  lifecycle_and_scaffold:
+    folder: "tools/<space>/<tool-name>/"
+    mandatory: true
+    responsibility: "Tool creation, git initialization, and packaging via uv tool"
+    specialist_skills:
+      - name: "tool-scaffolding"
+        role: "Generate compliant layout, pyproject.toml, and independent Git repo"
+
+  git_and_ci:
+    folder: "Repository-level PR and CI workflow"
+    specialist_skills:
+      - name: "git-guardrails-claude-code"
+        role: "Block destructive git operations"
+      - name: "gh-fix-ci"
+        role: "Fetch and repair failing GitHub Actions logs"
+      - name: "gh-address-comments"
+        role: "Address PR review comments via gh CLI"
+
+  retrieval:
+    folder: "Global search across tools"
+    specialist_skills:
+      - name: "xerj"
+        role: "Fast AST code and definition search"
+      - name: "xerj-hub"
+        role: "Public library and external documentation retrieval"
