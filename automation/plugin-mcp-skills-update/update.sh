@@ -34,10 +34,10 @@ fi
 log "=== Daily Maintenance Run Started ==="
 
 # -----------------------------------------------------------------------------
-# 1. Update Skills (vercel-labs/skills CLI)
+# 1. Update Skills (vercel-labs/skills CLI scoped to .agents/)
 # -----------------------------------------------------------------------------
-log "Starting Skills update (npx skills update -p -y)..."
-cd "$WORKSPACE_ROOT"
+log "Starting Skills update (npx skills update -p -y in .agents/)..."
+cd "$WORKSPACE_ROOT/.agents"
 
 SKILLS_OUTPUT=""
 if command -v npx >/dev/null 2>&1; then
