@@ -9,10 +9,13 @@ contract describes its public surface, not its internal structure.
 ```text
 <tool-name>/
   README.md            # Human runbook: purpose, invocation, recovery
-  AGENTS.md            # Agent boundaries for this repository
+  AGENTS.md            # Agent boundaries for this repository (or gitignored if environment-specific)
+  .gitignore           # Ignores local configs (*.yaml except *.example.yaml), logs, build artifacts
+  config.example.yaml  # Or register.example.yaml: tracked template for user configuration
   backend/             # CLI entrypoint and implementation
   tests/               # Behavior checks
   docs/                # Supporting docs when needed
+  scripts/             # setup.sh, release.sh, dashboard.sh
   automation/          # Tool-owned jobs, when the tool has one
   pyproject.toml       # Or the language-native manifest when needed
 ```
@@ -27,7 +30,8 @@ tree.
 Record these in the tool's `README.md`:
 
 - Stable invocation and how a scheduled job reaches it by absolute path.
-- Configuration source and precedence.
+- Configuration source, XDG standard paths, and precedence hierarchy.
+- Programmatic CLI subcommands for configuring entities or consumers.
 - Inputs, outputs, and exit codes.
 - Timeout and interruption behavior.
 - Rerun semantics: whether a repeat call is safe, and how a partial failure is
@@ -39,11 +43,13 @@ Record these in the tool's `README.md`:
 
 - `--help` works and a non-interactive path exists for every operation a
   scheduler calls. No prompt may block an unattended run.
-- Structured results go to stdout for automation. Diagnostics go to stderr.
+- Structured results go to stdout for automation (`--json` supported). Diagnostics go to stderr.
 - An invalid input exits nonzero with a stated reason and changes no state.
 - A failed update preserves the prior valid state.
 - Concurrent calls cannot corrupt shared state. Use one lock per mutable resource.
-- Credentials and mutable runtime state stay outside tracked source.
+- **Config Separation**: Credentials and mutable runtime state stay outside tracked source. Only configuration templates (`*.example.yaml`) are tracked. Real user configuration defaults to `$XDG_CONFIG_HOME/<tool>/` (`~/.config/<tool>/`).
+- **CLI-First Mutation**: If a tool maintains a registry or configuration, it must provide CLI subcommands (`consumer [add|set|remove|list]`, `config [get|set]`). Automated agents and callers must use these CLI commands rather than manually editing raw YAML/JSON files.
+- **Zero Hardcoded Paths**: Hardcoded absolute user paths (`/Users/...`) are forbidden. Code and scripts must resolve paths dynamically via `$HOME`, `Path.home()`, or script-relative paths.
 
 Tests cover success, invalid input, and the main failure path. Add a case when a
 new failure mode becomes reachable.

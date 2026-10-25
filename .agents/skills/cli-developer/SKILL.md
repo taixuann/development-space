@@ -31,3 +31,35 @@ Every tool must adhere to [Small-tool contract](../../docs/small-tool-contract.m
 5. **Idempotence and failure recovery**:
    - Running the tool twice with the same inputs must not corrupt persistent state.
    - Partial failures must retain the prior valid state and report clean diagnostics to `stderr`.
+
+6. **Configuration & Entity Management Subcommands (CLI-First Mutation)**:
+   - When a tool maintains registries, endpoints, profiles, or consumers, it MUST expose dedicated subcommands:
+     `<tool-name> <entity> [list|add|set|remove]` (e.g., `opencode-model-router consumer list`, `opencode-model-router consumer add`).
+   - Do NOT require automated agents or humans to hand-edit, regex-parse, or serialize raw YAML/JSON configuration files. The CLI must manage serialization, schema validation, and atomic writes.
+   - Always implement a `--json` output flag for list and status subcommands for automation.
+
+7. **Standard Configuration Resolution Hierarchy (XDG Precedence)**:
+   - Do not assume configuration files exist in the current working directory. Resolve configurations in strict order of precedence:
+     1. Explicit CLI argument: `--config <path>` or `--registry <path>`.
+     2. Local workspace override: `./config/<file>.yaml` or `./<file>.yaml`.
+     3. User standard XDG directory: `$XDG_CONFIG_HOME/<tool-name>/<file>.yaml` (default: `~/.config/<tool-name>/<file>.yaml`).
+     4. Tracked template fallback: `<tool-name>/config.example.yaml` in the tool root.
+   - Updating or reinstalling a tool repository must NEVER overwrite or delete existing user configurations.
+
+8. **Argparse Subparser Ergonomics (Shared Parent Parsers)**:
+   - Shared flags (such as `--config` or `--registry`) should be defined in a reusable parent parser so they can appear either before or after subcommands without syntax errors:
+     ```python
+     common_p = argparse.ArgumentParser(add_help=False)
+     common_p.add_argument('--config', default=None, help='Path to configuration file')
+
+     parser = argparse.ArgumentParser(prog='mytool', parents=[common_p])
+     subparsers = parser.add_subparsers(dest='subcommand')
+     consumer_p = subparsers.add_parser('consumer', parents=[common_p])
+     add_p = consumer_p.add_subparsers().add_parser('add', parents=[common_p])
+     ```
+   - This ensures both `mytool --config x consumer add` and `mytool consumer add --config x` execute seamlessly.
+
+9. **Zero Hardcoded Paths**:
+   - Never hardcode absolute user paths (e.g. `/Users/tai/...` or `/home/user/...`).
+   - Resolve home directories dynamically via `pathlib.Path.home()` or `$HOME`.
+   - Resolve tool-relative resources via `Path(__file__).resolve().parent`.

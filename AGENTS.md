@@ -15,6 +15,34 @@ When a tool's layout, invocation, and failure behavior must be defined:
 - Read [Standard tool layout](docs/standard-tool-layout.md)
 - Use skill `tool-scaffolding` when creating or restructuring a tool repository.
 
+### Core Tool Invariants
+
+Every tool in this workshop must adhere to four immutable operational laws:
+
+1. **Config Separation & XDG Invariant**:
+   Tool source repositories contain strictly stateless code, tests, and tracked configuration templates (`*.example.yaml` or `*.example.json`).
+   - Personal/local configuration (e.g. `register.yaml`, `config.yaml`, local `AGENTS.md`, `.env`) MUST be gitignored.
+   - User configuration lives outside the repository in standard XDG paths (e.g., `~/.config/<tool-name>/config.yaml`).
+   - Standard resolution precedence: (1) `--config`/`--registry` CLI flag, (2) Local workspace override (`./config/...` or `./...`), (3) User XDG config (`~/.config/<tool-name>/...`), (4) Tracked example template.
+   - Updating or reinstalling a tool repository must NEVER overwrite or delete existing user configurations.
+
+2. **CLI-First Mutation Invariant**:
+   When inspecting or mutating a tool's configuration, consumers, or registry entries, agents and scripts MUST invoke the tool's dedicated CLI subcommands (e.g., `<tool> consumer [list|add|set|remove]`, `<tool> config [get|set]`).
+   - Agents must never regex-edit, overwrite, or hand-serialize raw YAML/JSON configuration files when the tool provides a CLI subcommand.
+   - CLI subcommands must support a `--json` output flag for machine-readable output and automation.
+
+3. **Zero Hardcoded Paths Invariant**:
+   Hardcoded user paths (such as `/Users/username/...` or `/home/username/...`) are strictly prohibited in all code, shell scripts, LaunchAgent plists, and configuration files.
+   - Shell scripts must use dynamic self-resolution (`$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)`), `$HOME`, or `$PATH`.
+   - Python code must use `pathlib.Path.home()` or environment variables.
+   - Plist files must be dynamically generated from templates using `${HOME}` during setup.
+
+4. **3-Tier Delivery & Production Isolation Invariant**:
+   Every tool in this workshop conforms to a 3-tier delivery model:
+   - **Tier 1 (CLI Binary)**: Executables are published via `uv tool` (or language equivalent) to `~/.local/bin/<tool-name>`.
+   - **Tier 2 (Frontend UI)**: Tools with dashboards provide `<tool-name> --ui` and `scripts/dashboard.sh`.
+   - **Tier 3 (Automation)**: Production LaunchAgents (`~/Library/LaunchAgents/com.tai.<job>.plist`) must NEVER execute against `development-space` source trees. They point strictly to the runner in target consumer spaces (`~/.agents/automation/<job>/run.sh`).
+
 ## Methodology
 
 Use the installed engineering skills for the current operation.
@@ -49,13 +77,6 @@ Leave any dirty worktree in place. Leave any worktree with unpushed commits in
 place. Leave any other task worktree in place.
 
 Scheduled jobs call the installed binary in `~/.local/bin` or the target space runner (`~/.agents/automation/...`), never a temporary worktree and never `development-space` directly.
-
-## 3-Tier Delivery & Production Isolation
-
-Every tool in this workshop conforms to a 3-tier delivery model:
-1. **Tier 1 (CLI Binary)**: Executables are published via `uv tool` to `~/.local/bin/<tool-name>`.
-2. **Tier 2 (Frontend UI)**: Tools with dashboards provide `<tool-name> --ui` and `scripts/dashboard.sh`.
-3. **Tier 3 (Automation)**: Production LaunchAgents (`~/Library/LaunchAgents/com.tai.<job>.plist`) must NEVER execute against `development-space` source trees. They point strictly to the runner in target consumer spaces (`~/.agents/automation/<job>/run.sh`).
 
 ## Local instructions
 

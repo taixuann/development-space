@@ -16,7 +16,7 @@ Every tool must be an independent Git repository that adheres to the Small-tool 
 
 ## Procedure
 
-### Step 1: Create tool directory and initialize Git
+### Step 1: Create tool directory, initialize Git and .gitignore
 
 Run the following commands:
 ```bash
@@ -25,14 +25,39 @@ cd tools/<space>/<tool-name>
 git init -b main
 ```
 
-### Step 2: Determine required folder components
+Immediately initialize a standard `.gitignore` to enforce the **Config Separation Invariant** from day one:
+```bash
+cat << 'EOF' > .gitignore
+# Python & build artifacts
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+.build/
+
+# Runtime & local environment configurations (NEVER commit personal configs)
+config.yaml
+register.yaml
+.env
+.env.*
+*.local
+*.log
+
+# Local agent instructions (gitignored to avoid overriding workspace contracts)
+AGENTS.md
+EOF
+```
+
+### Step 2: Determine required folder components & config template
 
 Consult [`docs/standard-tool-layout.md`](../../docs/standard-tool-layout.md).
 Create mandatory directories and only the optional directories needed:
 
 ```bash
 # Always required:
-mkdir -p backend tests
+mkdir -p backend tests scripts
 
 # If the tool exposes network or MCP endpoints:
 mkdir -p api
@@ -45,6 +70,16 @@ mkdir -p database/migrations
 ```
 
 Do not create empty unused directories.
+
+If the tool requires user configuration or registry definitions, **always create a tracked template** (e.g. `config.example.yaml` or `register.example.yaml`), never a hardcoded personal config:
+```bash
+cat << 'EOF' > config.example.yaml
+# Tracked template. Real user configuration will reside at ~/.config/<tool-name>/config.yaml
+version: "1.0"
+settings:
+  timeout: 30
+EOF
+```
 
 ### Step 3: Write manifest and entrypoint
 
@@ -66,27 +101,61 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 ```
 
-Create `backend/__init__.py` and `backend/cli.py` implementing `--help` and basic options.
+Create `backend/__init__.py` and `backend/cli.py` implementing `--help`, standard exit codes, and entity management subcommands if applicable (see `cli-developer` skill).
 
 ### Step 4: Add helper scripts and documentation
 
-1. Create `scripts/setup.sh`:
+1. Create `scripts/setup.sh` with **dynamic distributor resolution** (strictly zero hardcoded `/Users/...` paths):
    ```bash
+   cat << 'EOF' > scripts/setup.sh
    #!/bin/bash
    set -euo pipefail
    REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-   DISTRIBUTOR="/Users/tai/development-space/scripts/distribute-tool.sh"
+   
+   # Dynamically discover workshop distributor script
+   DISTRIBUTOR="${DISTRIBUTOR_PATH:-$(cd "${REPO_DIR}/../../.." && pwd)/scripts/distribute-tool.sh}"
+   if [ ! -f "$DISTRIBUTOR" ]; then
+       DISTRIBUTOR="${HOME}/development-space/scripts/distribute-tool.sh"
+   fi
+   
+   if [ ! -f "$DISTRIBUTOR" ]; then
+       echo "[-] Error: distribute-tool.sh not found at ${DISTRIBUTOR}" >&2
+       exit 1
+   fi
    exec /bin/bash "$DISTRIBUTOR" "$REPO_DIR" "$@"
+   EOF
+   chmod +x scripts/setup.sh
    ```
-   and make it executable (`chmod +x scripts/setup.sh`).
 
-2. Write `README.md`:
+2. Create `scripts/release.sh` to enforce SemVer bumping, test verification, and automated packaging:
+   ```bash
+   cat << 'EOF' > scripts/release.sh
+   #!/bin/bash
+   # Automated SemVer Bumping, Git Tagging & Distribution Release Runner
+   set -euo pipefail
+   SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+   REPO_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
+   BUMP_TYPE="${1:-patch}"
+
+   cd "$REPO_DIR"
+   echo "[+] Running verification tests..."
+   python3 -m unittest discover tests
+
+   echo "[+] Bumping ${BUMP_TYPE} version..."
+   # Bump version in pyproject.toml, git commit, git tag, and call ./scripts/setup.sh
+   "${SCRIPT_DIR}/setup.sh"
+   EOF
+   chmod +x scripts/release.sh
+   ```
+
+3. Write `README.md`:
    - Tool purpose and stable CLI invocation.
-   - 3-tier delivery (Backend CLI, Frontend dashboard, Automation).
+   - 3-Tier delivery layout (CLI binary in `~/.local/bin`, UI dashboard via `--ui`, Automation in `~/.agents/automation/`).
+   - Configuration hierarchy: `--config` flag -> local override -> `~/.config/<tool-name>/` -> `config.example.yaml`.
    - Inputs, outputs, and exit codes.
    - Failure recovery.
-3. Write `AGENTS.md`:
-   - Boundaries and invariants for this specific tool repository.
+
+4. If needed, provide a local `AGENTS.md` (remember it is gitignored by default to keep the repo generic).
 
 ### Step 5: Write initial test
 
