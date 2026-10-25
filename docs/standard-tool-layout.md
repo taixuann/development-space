@@ -39,6 +39,11 @@ tools/<space>/<tool-name>/
 │   ├── test_cli.py            # CLI contract verification
 │   └── fixtures/              # Isolated, temporary test data
 │
+├── scripts/                   # (Optional) Helper, release, and launcher scripts
+│   ├── setup.sh               # 1-click space distribution wrapper
+│   ├── release.sh             # SemVer bump, git tagging, and packaging release
+│   └── dashboard.sh           # Quick UI/dashboard launcher
+│
 └── docs/                      # (Optional) Internal tool design notes or specs
 ```
 
@@ -48,6 +53,7 @@ tools/<space>/<tool-name>/
 | :--- | :--- | :--- | :--- |
 | `backend/` | **Mandatory** | Core computation, business logic, CLI entrypoint. | `backend/cli.py` exposes commands, options, and exit codes. |
 | `tests/` | **Mandatory** | Runnable checks covering success, invalid inputs, and failure paths. | Test runner commands (`pytest`, `swift test`). |
+| `scripts/` | Optional | Local setup, SemVer release, dashboard launcher. | Standard scripts (`setup.sh`, `release.sh`, `dashboard.sh`). |
 | `api/` | Optional | Web servers, REST endpoints, MCP server proxies. | Clean OpenAPI / MCP protocol contract. |
 | `frontend/` | Optional | Visual interfaces (interactive dashboards, canvas, views). | Browser URL or native app window. |
 | `database/` | Optional | SQLite / DuckDB schemas and migrations. | Zero hardcoded mutable databases in source tree; runtime DB stays in user home or explicit data root. |

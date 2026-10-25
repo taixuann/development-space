@@ -68,13 +68,24 @@ build-backend = "hatchling.build"
 
 Create `backend/__init__.py` and `backend/cli.py` implementing `--help` and basic options.
 
-### Step 4: Write documentation
+### Step 4: Add helper scripts and documentation
 
-1. Write `README.md`:
+1. Create `scripts/setup.sh`:
+   ```bash
+   #!/bin/bash
+   set -euo pipefail
+   REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+   DISTRIBUTOR="/Users/tai/development-space/scripts/distribute-tool.sh"
+   exec /bin/bash "$DISTRIBUTOR" "$REPO_DIR" "$@"
+   ```
+   and make it executable (`chmod +x scripts/setup.sh`).
+
+2. Write `README.md`:
    - Tool purpose and stable CLI invocation.
+   - 3-tier delivery (Backend CLI, Frontend dashboard, Automation).
    - Inputs, outputs, and exit codes.
    - Failure recovery.
-2. Write `AGENTS.md`:
+3. Write `AGENTS.md`:
    - Boundaries and invariants for this specific tool repository.
 
 ### Step 5: Write initial test
@@ -98,8 +109,8 @@ git commit -m "chore: initial scaffold for <tool-name>"
 
 ### Step 7: Register with uv tool
 
-Install into the user environment:
+Install into the user environment using the local setup script:
 ```bash
-uv tool install . --force
+./scripts/setup.sh
 ```
 Verify that `<tool-command> --help` executes successfully from any working directory.

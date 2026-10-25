@@ -37,20 +37,30 @@ flowchart LR
   git worktree remove worktrees/admin/<tool-name>_<request-id>
   ```
 
-### 5. Packaging and distribution (uv tool)
+### 5. Semantic versioning and release (`scripts/release.sh`)
+- Every tool supports automated Semantic Versioning (`patch`, `minor`, `major`) via `scripts/release.sh`:
+  ```bash
+  ./scripts/release.sh patch  # 0.1.0 -> 0.1.1
+  ```
+- The release runner validates test suites, bumps `pyproject.toml`, commits with `chore(release): bump version to vX.Y.Z`, tags `vX.Y.Z`, and invokes universal packaging.
+
+### 6. Packaging and distribution (uv tool)
 - The tool repository contains a valid `pyproject.toml` with console scripts:
   ```toml
   [project.scripts]
   my-tool = "my_tool.cli:main"
   ```
-- Install or refresh the CLI executable in the user environment:
+- Install or refresh the CLI executable in the user environment via universal distributor:
   ```bash
-  uv tool install /Users/tai/development-space/tools/<tool-name> --force
+  ./scripts/setup.sh
+  # Or via distributor directly:
+  /Users/tai/development-space/scripts/distribute-tool.sh .
   ```
 - The binary is placed at `~/.local/bin/my-tool`.
 
-### 6. Universal consumer execution
-- Any Space (`Admin`, `Personal`, `Research`, `Study`) or scheduled automation can call `my-tool` directly without touching virtualenvs or repository source trees:
-  ```bash
-  my-tool --option value --json
-  ```
+### 7. 3-Tier delivery contract & space decoupling
+Any Space (`Admin`, `Personal`, `Research`, `Study`) consumes tools across three decoupled tiers without ever touching virtual environments or development repository trees:
+1. **Tier 1 (Backend CLI):** Direct terminal invocation via `~/.local/bin/my-tool --option value --json`.
+2. **Tier 2 (Frontend Dashboard):** Visual web dashboards accessible via CLI flag `my-tool --ui` or helper script `./scripts/dashboard.sh`.
+3. **Tier 3 (Automation & Schedulers):** Production LaunchAgents (`~/Library/LaunchAgents/com.tai.<job-name>.plist`) point strictly to target space runners (`~/.agents/automation/<job-name>/run-sync.sh`) and logs in target space. **Zero cron or launchd processes are permitted to trigger against `development-space` source paths.**
+
