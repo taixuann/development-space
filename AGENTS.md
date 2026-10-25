@@ -48,7 +48,14 @@ or pushed, remove only the current task worktree with `git worktree remove`.
 Leave any dirty worktree in place. Leave any worktree with unpushed commits in
 place. Leave any other task worktree in place.
 
-Scheduled jobs call the stable canonical checkout, never a temporary worktree.
+Scheduled jobs call the installed binary in `~/.local/bin` or the target space runner (`~/.agents/automation/...`), never a temporary worktree and never `development-space` directly.
+
+## 3-Tier Delivery & Production Isolation
+
+Every tool in this workshop conforms to a 3-tier delivery model:
+1. **Tier 1 (CLI Binary)**: Executables are published via `uv tool` to `~/.local/bin/<tool-name>`.
+2. **Tier 2 (Frontend UI)**: Tools with dashboards provide `<tool-name> --ui` and `scripts/dashboard.sh`.
+3. **Tier 3 (Automation)**: Production LaunchAgents (`~/Library/LaunchAgents/com.tai.<job>.plist`) must NEVER execute against `development-space` source trees. They point strictly to the runner in target consumer spaces (`~/.agents/automation/<job>/run.sh`).
 
 ## Local instructions
 
