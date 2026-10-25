@@ -8,3 +8,5 @@ tools/
 # Machine-local harness configs.
 .claude/settings.local.json
 .impeccable/config.local.json
+*.admin-backup-*
+
