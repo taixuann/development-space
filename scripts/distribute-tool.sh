@@ -68,62 +68,73 @@ if [[ "$SPACE" == "admin" ]]; then
         echo "[+] Linked ${TARGET_TOOL_LINK} -> ${TOOL_DIR}"
     fi
 
-    # Ensure ~/.agents/register.yaml exists; if it already exists, NEVER overwrite it!
-    if [[ "$TOOL_NAME" =~ (opencode-model-router|opencode-free-router) ]]; then
-        ADMIN_REG="${HOME}/.agents/register.yaml"
-        if [[ ! -f "$ADMIN_REG" ]]; then
-            cp "${TOOL_DIR}/register.yaml" "$ADMIN_REG"
-            echo "[+] Initialized default Admin registry: ${ADMIN_REG}"
-        else
-            echo "[+] Preserved existing Admin registry (not modified): ${ADMIN_REG}"
-        fi
-    fi
-
-    # Check for automations
+    # Setup automations if present
     if [[ -d "${TOOL_DIR}/automation" ]]; then
-        # Wire model-control or matching automation runners
-        if [[ -d "${ADMIN_AUTO_DIR}/model-control" && "$TOOL_NAME" =~ (opencode-model-router|opencode-free-router) ]]; then
-            RUNNER_SCRIPT="${ADMIN_AUTO_DIR}/model-control/run-sync.sh"
-            LOGS_DIR="${ADMIN_AUTO_DIR}/model-control/logs"
-            mkdir -p "$LOGS_DIR"
+        if [[ "$TOOL_NAME" =~ (opencode-model-router|opencode-free-router) ]]; then
+            AUTO_JOB_DIR="${ADMIN_AUTO_DIR}/model-control"
+            LOGS_DIR="${AUTO_JOB_DIR}/logs"
+            RUNNER_SCRIPT="${AUTO_JOB_DIR}/run-sync.sh"
+            PLIST_PATH="$HOME/Library/LaunchAgents/com.tai.model-control-sync.plist"
+
+            mkdir -p "$AUTO_JOB_DIR" "$LOGS_DIR" "$HOME/Library/LaunchAgents"
+
+            # 1. Create runner script
             cat <<EOF > "$RUNNER_SCRIPT"
 #!/bin/bash
 # run-sync.sh — Automated wrapper calling installed CLI package
 set -euo pipefail
-export PATH="/Users/tai/.local/bin:\$PATH"
+export PATH="${HOME}/.local/bin:\$PATH"
 exec "${BIN_PATH}" --sync --space all "\$@"
 EOF
             chmod +x "$RUNNER_SCRIPT"
-            echo "[+] Updated Admin automation runner: ${RUNNER_SCRIPT}"
+            echo "[+] Installed Admin automation runner: ${RUNNER_SCRIPT}"
 
-            # Decouple system LaunchAgent plist from development-space
-            PLIST_PATH="$HOME/Library/LaunchAgents/com.tai.model-control-sync.plist"
-            if [[ -f "$PLIST_PATH" ]]; then
-                echo "[+] Decoupling LaunchAgent ${PLIST_PATH} to point strictly to target space..."
-                /usr/bin/python3 - <<PYEOF
-import plistlib
-from pathlib import Path
+            # 2. Dynamically generate and install LaunchAgent plist
+            echo "[+] Configuring LaunchAgent at ${PLIST_PATH}..."
+            cat <<PLIST_EOF > "$PLIST_PATH"
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.tai.model-control-sync</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>${RUNNER_SCRIPT}</string>
+    </array>
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Hour</key>
+        <integer>0</integer>
+        <key>Minute</key>
+        <integer>0</integer>
+    </dict>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>HOME</key>
+        <string>${HOME}</string>
+        <key>PATH</key>
+        <string>${HOME}/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+    </dict>
+    <key>StandardOutPath</key>
+    <string>${LOGS_DIR}/launchd.stdout.log</string>
+    <key>StandardErrorPath</key>
+    <string>${LOGS_DIR}/launchd.stderr.log</string>
+    <key>RunAtLoad</key>
+    <false/>
+</dict>
+</plist>
+PLIST_EOF
 
-plist_file = Path("$PLIST_PATH")
-with open(plist_file, 'rb') as f:
-    pl = plistlib.load(f)
-
-pl['ProgramArguments'] = ['/bin/bash', '$RUNNER_SCRIPT']
-pl['StandardOutPath'] = '$LOGS_DIR/launchd.stdout.log'
-pl['StandardErrorPath'] = '$LOGS_DIR/launchd.stderr.log'
-
-with open(plist_file, 'wb') as f:
-    plistlib.dump(pl, f)
-PYEOF
-                # Reload LaunchAgent
-                launchctl unload "$PLIST_PATH" 2>/dev/null || true
-                launchctl load "$PLIST_PATH" 2>/dev/null || true
-                echo "[+] Reloaded LaunchAgent: com.tai.model-control-sync"
-            fi
+            # 3. Reload and activate via launchctl
+            launchctl unload "$PLIST_PATH" 2>/dev/null || true
+            launchctl load "$PLIST_PATH" 2>/dev/null || true
+            echo "[+] Activated LaunchAgent: com.tai.model-control-sync"
         fi
     fi
 elif [[ "$SPACE" == "research" ]]; then
-    RESEARCH_TOOLS_DIR="/Users/tai/academic-space/research-space/tools"
+    RESEARCH_TOOLS_DIR="${HOME}/academic-space/research-space/tools"
     mkdir -p "$RESEARCH_TOOLS_DIR"
     TARGET_TOOL_LINK="${RESEARCH_TOOLS_DIR}/${TOOL_NAME}"
     if [[ ! -e "$TARGET_TOOL_LINK" || -L "$TARGET_TOOL_LINK" ]]; then
