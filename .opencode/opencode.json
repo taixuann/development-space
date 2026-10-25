@@ -1,13 +1,13 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "model": "opencode-go/deepseek-v4.1-flash",
+  "model": "opencode-go/deepseek-v4.1-flash#high",
   "plugins": [
     {
       "package": "opencode-fallback-model@0.1.0",
       "options": {
         "models": [
-          "opencode-go/deepseek-v4.1-flash",
-          "opencode-go/beam-free"
+          "opencode-go/deepseek-v4.1-flash#high",
+          "opencode-go/deepseek-v4.1-flash-free"
         ]
       }
     }

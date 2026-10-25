@@ -62,6 +62,8 @@ if [[ "$SPACE" == "admin" ]]; then
         # Wire model-control or matching automation runners
         if [[ -d "${ADMIN_AUTO_DIR}/model-control" && "$TOOL_NAME" =~ (opencode-model-router|opencode-free-router) ]]; then
             RUNNER_SCRIPT="${ADMIN_AUTO_DIR}/model-control/run-sync.sh"
+            LOGS_DIR="${ADMIN_AUTO_DIR}/model-control/logs"
+            mkdir -p "$LOGS_DIR"
             cat <<EOF > "$RUNNER_SCRIPT"
 #!/bin/bash
 # run-sync.sh — Automated wrapper calling installed CLI package
@@ -71,6 +73,31 @@ exec "${BIN_PATH}" --sync --space all "\$@"
 EOF
             chmod +x "$RUNNER_SCRIPT"
             echo "[+] Updated Admin automation runner: ${RUNNER_SCRIPT}"
+
+            # Decouple system LaunchAgent plist from development-space
+            PLIST_PATH="$HOME/Library/LaunchAgents/com.tai.model-control-sync.plist"
+            if [[ -f "$PLIST_PATH" ]]; then
+                echo "[+] Decoupling LaunchAgent ${PLIST_PATH} to point strictly to target space..."
+                /usr/bin/python3 - <<PYEOF
+import plistlib
+from pathlib import Path
+
+plist_file = Path("$PLIST_PATH")
+with open(plist_file, 'rb') as f:
+    pl = plistlib.load(f)
+
+pl['ProgramArguments'] = ['/bin/bash', '$RUNNER_SCRIPT']
+pl['StandardOutPath'] = '$LOGS_DIR/launchd.stdout.log'
+pl['StandardErrorPath'] = '$LOGS_DIR/launchd.stderr.log'
+
+with open(plist_file, 'wb') as f:
+    plistlib.dump(pl, f)
+PYEOF
+                # Reload LaunchAgent
+                launchctl unload "$PLIST_PATH" 2>/dev/null || true
+                launchctl load "$PLIST_PATH" 2>/dev/null || true
+                echo "[+] Reloaded LaunchAgent: com.tai.model-control-sync"
+            fi
         fi
     fi
 elif [[ "$SPACE" == "research" ]]; then
