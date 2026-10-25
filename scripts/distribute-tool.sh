@@ -68,6 +68,17 @@ if [[ "$SPACE" == "admin" ]]; then
         echo "[+] Linked ${TARGET_TOOL_LINK} -> ${TOOL_DIR}"
     fi
 
+    # Ensure ~/.agents/register.yaml exists; if it already exists, NEVER overwrite it!
+    if [[ "$TOOL_NAME" =~ (opencode-model-router|opencode-free-router) ]]; then
+        ADMIN_REG="${HOME}/.agents/register.yaml"
+        if [[ ! -f "$ADMIN_REG" ]]; then
+            cp "${TOOL_DIR}/register.yaml" "$ADMIN_REG"
+            echo "[+] Initialized default Admin registry: ${ADMIN_REG}"
+        else
+            echo "[+] Preserved existing Admin registry (not modified): ${ADMIN_REG}"
+        fi
+    fi
+
     # Check for automations
     if [[ -d "${TOOL_DIR}/automation" ]]; then
         # Wire model-control or matching automation runners
