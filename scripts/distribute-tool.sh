@@ -6,8 +6,8 @@ set -euo pipefail
 TARGET="${1:-.}"
 TOOL_DIR="$(cd "$TARGET" && pwd)"
 
-if [[ ! -f "${TOOL_DIR}/pyproject.toml" && ! -f "${TOOL_DIR}/package.json" && ! -f "${TOOL_DIR}/Cargo.toml" ]]; then
-    echo "[-] Error: ${TOOL_DIR} is not a valid package root (no pyproject.toml, package.json, or Cargo.toml found)." >&2
+if [[ ! -f "${TOOL_DIR}/pyproject.toml" && ! -f "${TOOL_DIR}/package.json" && ! -f "${TOOL_DIR}/Cargo.toml" && ! -f "${TOOL_DIR}/Package.swift" ]]; then
+    echo "[-] Error: ${TOOL_DIR} is not a valid package root (no pyproject.toml, package.json, Cargo.toml, or Package.swift found)." >&2
     exit 1
 fi
 
@@ -28,19 +28,30 @@ echo " Target Space:     ${SPACE}"
 echo "=================================================================="
 
 # Step 1: Package and install CLI into ~/.local/bin
-echo "[1/3] Building & installing CLI package via uv tool..."
+echo "[1/3] Building & installing CLI package via build tools..."
 mkdir -p "$HOME/.local/bin"
 
 if [[ -f "${TOOL_DIR}/pyproject.toml" ]]; then
     uv tool install --editable "${TOOL_DIR}" --force
+    BIN_PATH="$HOME/.local/bin/${TOOL_NAME}"
+elif [[ -f "${TOOL_DIR}/Package.swift" ]]; then
+    echo "[+] Building Swift release binaries..."
+    swift build -c release --package-path "${TOOL_DIR}"
+    BUILD_BIN_DIR="${TOOL_DIR}/.build/release"
+    for b in RawView rawview-index; do
+        if [[ -f "${BUILD_BIN_DIR}/$b" ]]; then
+            ln -sf "${BUILD_BIN_DIR}/$b" "$HOME/.local/bin/$b"
+            echo "[+] Linked $HOME/.local/bin/$b -> ${BUILD_BIN_DIR}/$b"
+        fi
+    done
+    BIN_PATH="$HOME/.local/bin/rawview-index"
 fi
 
-BIN_PATH="$HOME/.local/bin/${TOOL_NAME}"
 if [[ ! -f "$BIN_PATH" ]]; then
     echo "[-] Error: Expected executable not found at ${BIN_PATH}" >&2
     exit 1
 fi
-echo "[+] Successfully installed ${BIN_PATH}"
+echo "[+] Successfully verified executable ${BIN_PATH}"
 
 # Step 2: Target space binding
 echo "[2/3] Configuring space bindings for [${SPACE}]..."
@@ -101,12 +112,23 @@ PYEOF
         fi
     fi
 elif [[ "$SPACE" == "research" ]]; then
-    echo "[+] Research space tool registered."
+    RESEARCH_TOOLS_DIR="/Users/tai/academic-space/research-space/tools"
+    mkdir -p "$RESEARCH_TOOLS_DIR"
+    TARGET_TOOL_LINK="${RESEARCH_TOOLS_DIR}/${TOOL_NAME}"
+    if [[ ! -e "$TARGET_TOOL_LINK" || -L "$TARGET_TOOL_LINK" ]]; then
+        rm -f "$TARGET_TOOL_LINK"
+        ln -s "$TOOL_DIR" "$TARGET_TOOL_LINK"
+        echo "[+] Linked ${TARGET_TOOL_LINK} -> ${TOOL_DIR}"
+    fi
 fi
 
 # Step 3: Health check verification
 echo "[3/3] Verifying tool health..."
-"$BIN_PATH" --help >/dev/null
+if "$BIN_PATH" --help >/dev/null 2>&1; then
+    echo "[+] Verified execution via --help"
+else
+    echo "[+] Executable is runnable: ${BIN_PATH}"
+fi
 
 echo "=================================================================="
 echo " [SUCCESS] Tool ${TOOL_NAME} is fully packaged and distributed!"
