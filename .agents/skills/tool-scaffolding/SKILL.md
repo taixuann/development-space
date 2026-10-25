@@ -105,7 +105,7 @@ Create `backend/__init__.py` and `backend/cli.py` implementing `--help`, standar
 
 ### Step 4: Add helper scripts and documentation
 
-1. Create `scripts/setup.sh` with **dynamic distributor resolution** (strictly zero hardcoded `/Users/...` paths):
+1. Create `scripts/setup.sh` with **dynamic distributor resolution** for local development (strictly zero hardcoded `/Users/...` paths):
    ```bash
    cat << 'EOF' > scripts/setup.sh
    #!/bin/bash
@@ -127,7 +127,38 @@ Create `backend/__init__.py` and `backend/cli.py` implementing `--help`, standar
    chmod +x scripts/setup.sh
    ```
 
-2. Create `scripts/release.sh` to enforce SemVer bumping, test verification, and automated packaging:
+2. Create `scripts/install.sh` for **Remote 1-Line Installation via GitHub**:
+   This script allows external consumers or target spaces to install the tool via `curl` or `gh` without cloning `development-space`:
+   ```bash
+   cat << 'EOF' > scripts/install.sh
+   #!/bin/bash
+   # Remote 1-Line Installer
+   set -euo pipefail
+
+   # 1. Ensure uv
+   command -v uv >/dev/null 2>&1 || curl -LsSf https://astral.sh/uv/install.sh | sh
+   export PATH="${HOME}/.local/bin:${PATH}"
+
+   # 2. Install binary via uv tool from GitHub
+   uv tool install git+https://github.com/taixuann/<tool-name>.git --force
+
+   # 3. Bootstrap user config if missing
+   CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/<tool-name>"
+   CONFIG_FILE="${CONFIG_DIR}/config.yaml"
+   mkdir -p "$CONFIG_DIR"
+   if [ ! -f "$CONFIG_FILE" ]; then
+       # Fetch example template
+       curl -fsSL https://raw.githubusercontent.com/taixuann/<tool-name>/main/config.example.yaml -o "$CONFIG_FILE" 2>/dev/null || true
+   fi
+
+   # 4. Final verification
+   "${HOME}/.local/bin/<tool-command>" --help >/dev/null
+   echo "[SUCCESS] <tool-name> installed successfully!"
+   EOF
+   chmod +x scripts/install.sh
+   ```
+
+3. Create `scripts/release.sh` to enforce SemVer bumping, test verification, and automated packaging:
    ```bash
    cat << 'EOF' > scripts/release.sh
    #!/bin/bash
@@ -148,14 +179,15 @@ Create `backend/__init__.py` and `backend/cli.py` implementing `--help`, standar
    chmod +x scripts/release.sh
    ```
 
-3. Write `README.md`:
+4. Write `README.md`:
    - Tool purpose and stable CLI invocation.
+   - Remote 1-line installation via `curl -fsSL .../scripts/install.sh | bash` or `gh api`.
    - 3-Tier delivery layout (CLI binary in `~/.local/bin`, UI dashboard via `--ui`, Automation in `~/.agents/automation/`).
    - Configuration hierarchy: `--config` flag -> local override -> `~/.config/<tool-name>/` -> `config.example.yaml`.
    - Inputs, outputs, and exit codes.
    - Failure recovery.
 
-4. If needed, provide a local `AGENTS.md` (remember it is gitignored by default to keep the repo generic).
+5. If needed, provide a local `AGENTS.md` (remember it is gitignored by default to keep the repo generic).
 
 ### Step 5: Write initial test
 
