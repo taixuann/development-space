@@ -1,0 +1,115 @@
+version: 2
+updated_at: "2026-10-27"
+workshop: "development-space"
+
+# Mapping between Tool Folders (docs/standard-tool-layout.md) and Owning Specialist Skills
+tool_layer_mapping:
+  backend:
+    folder: "tools/<space>/<tool-name>/backend/"
+    mandatory: true
+    responsibility: "Core application logic and public CLI surface"
+    specialist_skills:
+      - name: "python-pypi-package-builder"
+        role: "Build, package, and structure production-grade Python CLI tools and libraries"
+      - name: "codebase-design"
+        role: "Enforce deep modules and minimize interface complexity"
+      - name: "batch-script-progress"
+        role: "Standardize terminal progress bars, throughput, and ANSI spinners for CLI batches"
+      - name: "autoresearch"
+        role: "Autonomous iterative loop for benchmarking and code optimization"
+
+  frontend:
+    folder: "tools/<space>/<tool-name>/frontend/"
+    mandatory: false
+    responsibility: "Visual web interfaces, dashboards, or native desktop/mobile apps"
+    specialist_skills:
+      - name: "impeccable"
+        condition: "Web/HTML/React UI"
+        role: "Information architecture, typography, responsiveness, UI polish"
+      - name: "anti-ui-slop"
+        condition: "Web/HTML/React UI"
+        role: "Enforce product-specific real-world design, eliminate generic AI UI slop"
+      - name: "swiftui-expert-skill"
+        condition: "Swift / macOS / iOS native UI"
+        role: "SwiftUI architecture, @Observable state, Liquid Glass, platform views"
+
+  database:
+    folder: "tools/<space>/<tool-name>/database/"
+    mandatory: false
+    responsibility: "Local storage, schemas, migrations, and caching"
+    specialist_skills:
+      - name: "sqlite-data-modeling"
+        role: "Design embedded SQLite/DuckDB schemas, indexes, and migrations"
+
+  api_and_mcp:
+    folder: "tools/<space>/<tool-name>/api/"
+    mandatory: false
+    responsibility: "Web APIs, HTTP/REST endpoints, and MCP servers"
+    specialist_skills:
+      - name: "mcp-security-audit"
+        role: "Audit MCP server endpoints, tools, and permissions against vulnerabilities"
+      - name: "api-breaking-change-detector"
+        role: "Cross-reference backend endpoints/DTOs against frontend consumers"
+
+  tests:
+    folder: "tools/<space>/<tool-name>/tests/"
+    mandatory: true
+    responsibility: "Runnable verification checks, unit, integration, and E2E tests"
+    specialist_skills:
+      - name: "test-driven-development"
+        role: "Test-first behavior verification and test fixtures"
+      - name: "playwright-cli"
+        condition: "Web frontend E2E browser automation"
+        role: "Automated browser interaction and regression testing"
+
+  lifecycle_and_scaffold:
+    folder: "tools/<space>/<tool-name>/"
+    mandatory: true
+    responsibility: "Tool creation, git initialization, and packaging via uv tool"
+    specialist_skills:
+      - name: "python-pypi-package-builder"
+        role: "PyPA package scaffolding, pyproject.toml, SemVer, and distribution via uv tool"
+      - name: "folder-structure-blueprint-generator"
+        role: "Audit and enforce Separation of Concerns across tool directories"
+      - name: "code-exemplars-blueprint-generator"
+        role: "Extract project-standard exemplars to keep AI code style consistent"
+
+  git_and_ci:
+    folder: "Repository-level PR, CI/CD workflows, and issue tracking"
+    specialist_skills:
+      - name: "gh-fix-ci"
+        role: "Fetch and repair failing GitHub Actions logs"
+      - name: "github-actions-hardening"
+        role: "Security review and threat modeling for .github/workflows/*.yml"
+      - name: "create-github-issues-feature-from-implementation-plan"
+        role: "Automate translation of implementation plan phases into GitHub Issues"
+
+  docs_and_quality:
+    folder: "Documentation, ADRs, and spec drift"
+    specialist_skills:
+      - name: "docs-sync-audit"
+        role: "Detect doc drift between code changes, CLI flags, and README/docs"
+      - name: "technical-documentation"
+        role: "Write clear CLI help, runbooks, and developer specifications"
+
+  agentic_governance:
+    folder: "Agent runtime, multi-agent teams, and background automations"
+    specialist_skills:
+      - name: "agentic-eval"
+        role: "Self-critique and schema/payload verification before committing state"
+      - name: "agent-owasp-compliance"
+        role: "OWASP ASI Top 10 compliance for autonomous background agents"
+      - name: "agent-architecture"
+        role: "Architectural blueprint and discovery for multi-agent systems"
+      - name: "agent-skill-stack"
+        role: "Dynamic assembly of micro-skills for end-to-end task goals"
+      - name: "ai-team-orchestration"
+        role: "Bootstrap and coordinate lightweight multi-agent dev teams"
+
+  retrieval:
+    folder: "Global search across tools"
+    specialist_skills:
+      - name: "xerj"
+        role: "Fast AST code and definition search"
+      - name: "xerj-hub"
+        role: "Public library and external documentation retrieval"

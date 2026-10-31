@@ -1,12 +1,12 @@
-# Temporary linked Git worktrees - never commit their contents.
+# Independent product checkouts - fully ignored by development-space root Git
+repos/
+
+# Legacy ignore entries (retired trees; keep so stale paths stay untracked)
+tools/
 worktrees/
 worktree/
-
-# Independent tool repositories tree - fully ignored by development-space
-tools/
 
 # Machine-local harness configs.
 .claude/settings.local.json
 .impeccable/config.local.json
 *.admin-backup-*
-

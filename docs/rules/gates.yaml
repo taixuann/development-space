@@ -1,0 +1,185 @@
+version: 1
+updated: 2026-10-30
+
+# Machine-readable gates for the workshop tracks.
+#
+# This file is the contract that `workshop-driver/scripts/phase_status.py`
+# reads. The prose lives in the rule files next to it; this file only lists
+# what must exist on disk.
+#
+# gate.kind:
+#   artifact - a file or folder must exist, and optionally contain a string.
+#              A script can check it.
+#   manual   - a person must confirm it. The script lists it and never passes
+#              it on its own. Record the confirmation in the tool's AGENTS.md
+#              under "Decisions".
+#
+# gate.evidence: a glob or list of globs, relative to the tool directory.
+#                Any match satisfies the gate.
+
+tracks:
+  small_tool:
+    label: Small tool
+    summary: One command-line tool, one script, one purpose.
+    sequence: [small_1_brief, small_2_tdd, small_3_verify]
+  platform:
+    label: Platform or app
+    summary: More than one language, more than one front end, or a rewrite.
+    sequence: [phase_1, phase_2, phase_3]
+
+phases:
+  small_1_brief:
+    label: Brief
+    rule: tiers.md
+    skill: superpowers:brainstorming
+    gates:
+      - id: purpose
+        label: Purpose and scope of the first version agreed
+        kind: manual
+        action: Ask the user what the tool does and what the first version leaves out.
+
+  small_2_tdd:
+    label: Tests first
+    rule: tiers.md
+    skill: superpowers:test-driven-development
+    gates:
+      - id: tests
+        label: A test suite exists and runs
+        kind: artifact
+        evidence: ["tests/**", "test/**", "Tests/**", "**/Tests/**", "test_*.py", "**/*_test.py", "**/*_test.go", "**/*.test.ts"]
+        skill: superpowers:test-driven-development
+        action: Write the failing test before the implementation.
+
+  small_3_verify:
+    label: Verify
+    rule: tiers.md
+    skill: superpowers:verification-before-completion
+    gates:
+      - id: verification
+        label: Fresh verification output reviewed before claiming done
+        kind: manual
+        action: Run the test and lint commands, then read the output before any claim of done.
+
+  phase_1:
+    label: Phase 1 - think and decide the vision
+    rule: phase-1-vision.md
+    skill: superpowers:brainstorming
+    gates:
+      - id: vision
+        label: Vision, goals, non-goals and first-version scope agreed
+        kind: manual
+        skill: superpowers:brainstorming
+        action: Run the brainstorming design conversation, then record the decisions in the tool's AGENTS.md.
+
+      - id: glossary
+        label: GLOSSARY.md records the domain terms
+        kind: artifact
+        evidence: ["GLOSSARY.md", "docs/GLOSSARY.md"]
+        skill: domain-modeling
+        action: Write GLOSSARY.md, one line per term, in the tool's own words.
+
+      - id: stack_skills
+        label: Outside skills and plugins for the stack listed
+        kind: manual
+        skill: agent-skill-stack
+        action: Once the stack is known, list the outside skills it needs and propose them to the user.
+
+  phase_2:
+    label: Phase 2 - detect, prove, plan
+    rule: phase-2-plan.md
+    skill: codebase-design
+    gates:
+      - id: codebase_read
+        label: Existing code read, problems and test inventory written
+        kind: artifact
+        evidence: ["docs/superpowers/specs/*.md", "docs/superpowers/specs/**/*.md"]
+        skill: codebase-design
+        action: Read the existing code and write the problems and the test inventory into docs/superpowers/specs/.
+
+      - id: spike_worktree
+        label: Spike worktree kept apart from the main branch
+        kind: artifact
+        check: worktrees
+        skill: superpowers:using-git-worktrees
+        action: Create the spike worktree before the first experiment.
+
+      - id: spikes
+        label: Each risky unknown has a spike with a recorded go or no-go
+        kind: artifact
+        evidence: ["docs/spikes/*.md"]
+        skill: create-technical-spike
+        action: Write one spike per risky unknown, with a time limit and a recorded go or no-go.
+
+      - id: adr
+        label: Each hard-to-reverse choice has an ADR
+        kind: artifact
+        evidence: ["docs/adr/*.md"]
+        skill: domain-modeling
+        action: Write one ADR per hard-to-reverse choice, in the domain-modeling format.
+
+      - id: design_doc
+        label: Design doc written and approved by the user
+        kind: manual
+        evidence: ["docs/superpowers/specs/*design*.md", "docs/superpowers/specs/**/*design*.md"]
+        skill: superpowers:brainstorming
+        action: Write the design doc in docs/superpowers/specs/, get a reviewer, then get the user's approval.
+
+      - id: ui_brief
+        label: Design brief fixes the look and the web framework (only when the product has a UI)
+        kind: manual
+        optional: true
+        skill: impeccable
+        action: Write the design brief before any UI task.
+
+      - id: plan
+        label: A plan exists with acceptance checks and a Review Focus section
+        kind: artifact
+        evidence: ["docs/superpowers/plans/*.md"]
+        skill: superpowers:writing-plans
+        action: Write the plan with one acceptance check and one command per task.
+
+      - id: plan_review
+        label: A fresh reviewer read the plan and the findings are fixed
+        kind: manual
+        skill: superpowers:requesting-code-review
+        action: Hand the plan to a fresh reviewer and fix every finding.
+
+  phase_3:
+    label: Phase 3 - build and verify
+    rule: phase-3-build.md
+    skill: superpowers:test-driven-development
+    gates:
+      - id: tool_agents_md
+        label: The tool AGENTS.md exists and keeps its invariants
+        kind: artifact
+        evidence: ["AGENTS.md"]
+        skill: create-agentsmd
+        action: Scaffold AGENTS.md and diff it against the invariants already in the file.
+
+      - id: stack_profile
+        label: The stack profile table is recorded in AGENTS.md
+        kind: artifact
+        evidence: ["AGENTS.md"]
+        contains: "| Part |"
+        skill: create-agentsmd
+        action: Add the Part / Language or store / Skills table to AGENTS.md.
+
+      - id: readme
+        label: README and docs written
+        kind: artifact
+        evidence: ["README.md"]
+        skill: create-readme
+        action: Write the README, then the reference docs.
+
+      - id: tests
+        label: A test suite exists and runs
+        kind: artifact
+        evidence: ["tests/**", "test/**", "Tests/**", "**/Tests/**", "test_*.py", "**/*_test.py", "**/*_test.go", "**/*.test.ts"]
+        skill: superpowers:test-driven-development
+        action: Write the failing test before the implementation.
+
+      - id: verification
+        label: Verification output reviewed before the claim of done
+        kind: manual
+        skill: superpowers:verification-before-completion
+        action: Run the checks, then run docs-sync-audit, then claim done.

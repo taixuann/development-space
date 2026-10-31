@@ -1,5 +1,0 @@
-*.log
-latest-result.json
-runs/
-!.gitignore
-!.gitkeep
