@@ -1,0 +1,6 @@
+{"expectations":[
+ {"text":"States that no design doc exists (docs/superpowers/specs is empty).","passed":true,"evidence":"report.md: 'Design doc file missing'"},
+ {"text":"Identifies missing spikes and missing ADRs.","passed":true,"evidence":"report.md: 'spike', 'ADR'"},
+ {"text":"Next step is reading the code or writing the design doc, not building.","passed":true,"evidence":"report.md: 'codebase-design trước'"},
+ {"text":"Does not claim Phase 3 or completion.","passed":true,"evidence":"report.md: 'Không build'"}
+],"summary":{"passed":4,"failed":0,"total":4,"pass_rate":1.0}}

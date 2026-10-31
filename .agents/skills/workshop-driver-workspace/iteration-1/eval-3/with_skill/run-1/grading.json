@@ -1,0 +1,6 @@
+{"expectations":[
+ {"text":"Does not produce a phase status report.","passed":true,"evidence":"report.md: 'Skill không áp dụng' and no gate list"},
+ {"text":"Addresses the typo request (reports the line or that it is absent).","passed":true,"evidence":"report.md: grep found no 'recieve' in README"},
+ {"text":"Does not modify any file.","passed":true,"evidence":"notes.md: 'No file writes beyond outputs'"}
+],
+"summary":{"passed":3,"failed":0,"total":3,"pass_rate":1.0}}

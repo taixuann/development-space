@@ -1,0 +1,10 @@
+{
+  "eval_id": 3,
+  "eval_name": "negative-typo-fix",
+  "prompt": "Sửa lỗi typo 'recieve' thành 'receive' trong README của raw-viewer giúp tôi.",
+  "assertions": [
+    "Does not produce a phase status report.",
+    "Addresses the typo request (reports the line or that it is absent).",
+    "Does not modify any file."
+  ]
+}

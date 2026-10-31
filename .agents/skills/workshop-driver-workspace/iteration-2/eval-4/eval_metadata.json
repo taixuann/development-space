@@ -1,0 +1,9 @@
+{
+  "eval_id": 4,
+  "eval_name": "inspect-existing-tool",
+  "prompt": "Tôi muốn hiểu raw-viewer đang làm gì và nên bắt đầu inspect từ đâu?",
+  "assertions": [
+    "Proposes graphify and xerj to read the existing code before any vision work.",
+    "Does not run the phase machinery (no gate list / no phase report)."
+  ]
+}

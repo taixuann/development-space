@@ -1,0 +1,157 @@
+---
+name: github-repo-care
+version: 1.3.1
+type: protocol
+author: Lukas Geiger + Codex
+created: 2026-06-18
+updated: 2026-09-27
+aliases: [github-pflege, repo-veroeffentlichen, repo-release, privacy-gate, release-gate]
+description: "Protocolo para crear, publicar, lanzar, auditar y mantener repositorios de GitHub de forma segura: verificar reglas y bloqueos locales, crear .gitignore antes del primer add, realizar comprobaciones de privacidad, preparar README/i18n/banner/metadatos, verificar etiquetas de lanzamiento y publicaciones de GitHub, y actualizar perfiles de organización, archivos llms.txt y enlaces de registro."
+standalone: true
+anthropic_compatible: true
+bach_compatible: true
+bach_origin: false
+category: dev
+tags: [github, repo, release, privacy, i18n, marketing, ci, documentation]
+language: es
+status: active
+dependencies: {'tools': ['git', 'gh', 'rg'], 'services': ['GitHub'], 'protocols': [], 'python': []}
+provenance: {'origin': 'custom', 'origin_path': '~/.codex/skills/github-repo-care/', 'origin_version': '1.0.0', 'origin_repo': None, 'last_sync_from_origin': '2026-06-18', 'last_sync_to_origin': None, 'local_changes_since_sync': False}
+---
+
+<img src="banner.png" width="100%" alt="github-repo-care banner">
+
+> **Español** — Versión oficial en español de `github-repo-care`.
+
+
+# GitHub Repo Care — Publicar y mantener repositorios de forma limpia (Español)
+
+## Cuándo usar
+
+Usa este skill cuando necesites crear, publicar, lanzar, auditar o mantener un repositorio de GitHub. Es especialmente importante antes del primer push público, para etiquetas de lanzamiento, metadatos del repositorio, perfiles de organización y comprobaciones de privacidad.
+
+No lo uses para trabajo de implementación puro sin un paso de publicación en GitHub. Finaliza primero el flujo de desarrollo o depuración relevante y luego activa este skill para la publicación.
+
+## Regla fundamental
+
+Prepara el repositorio antes del primer push público. Un `.gitignore` correcto, puerta de privacidad, licencia, README, metadatos e historial de lanzamientos son mucho más económicos antes de que exista un historial público.
+
+## Flujo de trabajo y procedimiento
+
+1. **Leer reglas locales.** Consulta `AGENTS.md`, `CLAUDE.md`, `START.md`, política de lanzamientos, política de nombres y política de bloqueos si están presentes.
+2. **Comprobar bloqueos.** Si `LOCK.txt` o un `LOCK.*.txt` coincidente está activo, no edites ese ámbito.
+3. **Fijar la identidad del repositorio.** Confirma el nombre, la organización, la visibilidad, la licencia y el propósito en una sola frase.
+4. **Crear `.gitignore` antes de `git add`.** Excluye secretos, datos locales, bases de datos, salidas de compilación, entornos virtuales, cachés, archivos de IDE y notas privadas.
+5. **Añadir elementos públicos básicos.** Archivos típicos: `README.md`, `LICENSE`, `CHANGELOG.md`, `SECURITY.md`, `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `llms.txt` y CI.
+6. **Escribir el README para el descubrimiento.** Primer vistazo: propósito, instalación, uso, modelo de privacidad, estructura del proyecto, licencia y nombre canónico del repositorio.
+7. **Añadir señales visuales.** Añade un banner, logo o captura de pantalla cuando facilite la comprensión del proyecto. Evita la decoración genérica cuando sea posible mostrar una imagen real del producto o un diagrama conceptual claro.
+8. **Planificar i18n deliberadamente.** Mínimo: inglés más el idioma del proyecto. Conjunto estándar preferido para módulos orientados al usuario: alemán, inglés, español, chino simplificado, japonés y ruso.
+9. **Ejecutar pruebas y comprobaciones de humo.** Verifica localmente antes de declarar éxito o crear un lanzamiento.
+10. **Ejecutar la puerta de privacidad.** Inspecciona el conjunto preparado/rastreado en busca de secretos, rutas locales, PII, `.env`, bases de datos, documentos privados, artefactos generados y mojibake.
+11. **Hacer commit y push.** Haz commit solo después de superar la puerta de privacidad. Luego crea o conecta el repositorio de GitHub, haz push y verifica el estado remoto.
+12. **Establecer metadatos.** Revisa la descripción, temas (topics), página de inicio, visibilidad y rama por defecto.
+13. **Crear el lanzamiento.** Crea la etiqueta y el lanzamiento de GitHub (GitHub release); verifica la CI tanto para la rama como para la etiqueta.
+14. **Actualizar superficies de descubrimiento.** Enlaza desde el perfil de la organización, `llms.txt`, registros centrales, índices de módulos locales y READMEs del ecosistema. **Publicar ⇒ página de perfil (T-20260926-796851315):** si el repo tiene un banner, comprueba mecánicamente si ya aparece en la página de perfil de la organización (`<org>/.github/profile/README.md`) — `python org_profile_gate.py --org <org>` (`.AI/.SKILLS/testing/`). Si falta, el script genera un fragmento markdown listo para pegar.
+    **Marcar con estrella el propio repositorio (T-20260926-299328659):** el mantenimiento posterior comprueba si la cuenta ya marcó con estrella cada uno de sus propios repos públicos, y lo hace si no — mediante tu propia herramienta de cuidado de GitHub, si tienes una (ruta e invocación desde la configuración local, p. ej. un flag `--self-star`: sin argumento de repo, una pasada de recuperación en todas las organizaciones configuradas; con uno, una pasada de un solo repo justo después de esta publicación). Nunca quitar la estrella automáticamente.
+    **Cuidado de stargazers:** sigue a los nuevos stargazers y devuélveles la estrella a su mejor proyecto cuando la calidad realmente lo justifique — si tu herramienta de cuidado de GitHub ya tiene un módulo de reciprocidad, úsalo (puntúa la relevancia temática y sugiere estrella-de-vuelta/invitar/revisar/omitir; ejecuta lo siguiente con límites de tasa, tiempo de espera y una red de seguridad dry-run/apply/confirm). No lo reconstruyas si ya existe; el módulo registra sus propias decisiones. Nunca dejar de seguir ni quitar estrellas automáticamente.
+15. **Verificación final.** Comprueba el README remoto, la página de lanzamientos, los temas, la CI y los enlaces.
+
+## Puerta de Privacidad (Privacy Gate)
+
+Inspecciona el conjunto preparado (staged) o rastreado (tracked), no solo el árbol de trabajo visible.
+
+```bash
+git diff --cached --check
+git ls-files
+rg -n "C:\\\\Us[e]rs\\\\|C:/Us[e]rs/|/c/Us[e]rs/|s[k]-[A-Za-z0-9]|gh[p]_|gh[o]_|API[_-]?KEY|TO[K]EN|PASS[W]ORD|SEC[R]ET|\\x{C3}|\\x{C2}|\\x{FFFD}" .
+```
+
+Para módulos públicos, documenta también un `RELEASE_GATE.md` o puerta equivalente: fecha, comandos ejecutados, resultado, advertencias restantes y excepciones intencionadas. Si alguna vez se incluyó un secreto en un commit, eliminarlo de `HEAD` no es suficiente; rota el secreto.
+
+**Comprobar la visibilidad de los repos enlazados.** Un escaneo de rutas/tokens no encuentra enlaces a repos privados de GitHub en READMEs públicos (caso de referencia T-20260926-820252321: `ellmos-ai/ellmos-core` pasó desapercibido en una tabla de un README aunque ese repo es privado). Si existe en el repositorio, ejecuta la comprobación reutilizable:
+
+```bash
+python testing/repo_link_visibility_gate.py --repo .
+```
+
+La comprobación falla en abierto solo ante la incertidumbre genuina (caída de red, límite de tasa 403/429 — solo una pista, nunca un bloqueo); un 404 bloquea igual que un `private: true` confirmado, porque ambos significan que el enlace es irresoluble para terceros (privado o inexistente). Sin este script (el repo no tiene una copia de la comprobación): revisa manualmente cada enlace a un repo hermano/de terceros en el README con `gh api repos/ORG/REPO --jq .private`.
+
+## Metadatos de GitHub
+
+Después del push, establece los metadatos y los datos de lanzamiento de forma explícita.
+
+```bash
+gh repo edit ORG/REPO --description "Descripción corta y concreta" \
+  --add-topic local-first --add-topic python --add-topic llm
+git tag -a v1.0.0 -m "v1.0.0"
+git push origin v1.0.0
+gh release create v1.0.0 --repo ORG/REPO --title "v1.0.0" --notes "..."
+```
+
+A continuación, verifica:
+
+```bash
+gh repo view ORG/REPO --json nameWithOwner,visibility,description,repositoryTopics,url
+gh release view v1.0.0 --repo ORG/REPO --json tagName,url,isDraft,isPrerelease
+gh run list --repo ORG/REPO --limit 5
+```
+
+Si la CI está en rojo después de un lanzamiento, el repositorio aún no se ha publicado de forma limpia. Para un lanzamiento inicial recién creado, mover de forma inmediata e intencionada la etiqueta recién creada al commit corregido es aceptable.
+
+## Errores frecuentes
+
+| Error | Solución |
+|---|---|
+| `.gitignore` se añade después de `git add` | Quitar del staging primero, corregir reglas de ignore y volver a añadir |
+| README es monolingüe aunque la UI o skill sea multilingüe | Añadir enlaces de idioma o READMEs localizados |
+| Sin banner, temas o descripción | Añadir activos de descubrimiento antes del anuncio |
+| La etiqueta de lanzamiento existe, pero la CI está en rojo | Corregir la CI y verificar la nueva ejecución |
+| Se actualiza el README de la organización, pero se omite `llms.txt` | Actualizar tanto las superficies legibles por humanos como por máquinas |
+| Una ruta local aparece en la documentación pública | Reemplazarla con rutas relativas o ejemplos genéricos |
+| El repositorio público contiene una base de datos de pruebas o bandeja de entrada de notebooks | Eliminar del rastreo, añadir reglas de ignore y volver a ejecutar la puerta de privacidad |
+
+## Lista de comprobación final
+
+- [ ] Reglas locales y bloqueos comprobados.
+- [ ] `.gitignore` existía antes del primer add.
+- [ ] Documentos públicos, licencia, seguridad, contribución, changelog y `llms.txt` presentes.
+- [ ] README incluye nombre del repo, propósito, instalación, uso, privacidad y licencia.
+- [ ] Expectativa de i18n cumplida.
+- [ ] Banner, logo o captura de pantalla presentes cuando sea útil.
+- [ ] Pruebas y verificaciones básicas (smokes) superadas.
+- [ ] Escaneos de privacidad, rutas, secretos, bases de datos y mojibake limpios.
+- [ ] Descripción de GitHub, temas, etiqueta, release y CI verificados.
+- [ ] Perfil de organización, registro y enlaces del ecosistema actualizados.
+- [ ] ¿Tiene banner? `org_profile_gate.py --org <org>` se ejecutó sin hallazgo para este repo.
+
+## Historial de cambios
+
+### 1.3.0 (2026-09-27)
+- Ampliado el paso 14 (T-20260926-299328659, petición del usuario): comprobar/establecer la
+  propia estrella de la cuenta en sus repos públicos, más el cuidado de stargazers (seguir +
+  devolver estrella por calidad), mediante tu propia herramienta de cuidado de GitHub si
+  tienes una — sin prescribir una herramienta concreta. Nunca dejar de seguir ni quitar
+  estrellas automáticamente.
+
+### 1.3.1 (2026-09-27)
+- Corrección de documentación: la semántica del 404 en la descripción de la puerta de
+  privacidad era incorrecta. Según `testing/repo_link_visibility_gate.py`, un 404
+  (privado o inexistente) bloquea igual que un `private: true` confirmado; fallar en
+  abierto solo aplica a caídas de red y límites de tasa (403/429). Corregido en la
+  sección de la Puerta de Privacidad y en la entrada del historial de 1.2.0.
+
+### 1.2.0 (2026-09-26)
+- Nuevo paso de puerta de privacidad (T-20260926-820252321): comprobar la visibilidad de los
+  repos de GitHub enlazados (`testing/repo_link_visibility_gate.py --repo .`, falla en abierto
+  ante caídas de red/límite de tasa, bloquea ante 404 y ante un `private: true` confirmado).
+  Caso de referencia: `ellmos-ai/ellmos-core` (un repo privado) pasó desapercibido en una
+  tabla de un README.
+
+### 1.1.0 (2026-09-26)
+- Añadido el paso "Publicar ⇒ página de perfil" (T-20260926-796851315): un repo con banner debe
+  comprobarse contra el README de perfil de su organización (`<org>/.github/profile/README.md`),
+  mecánicamente vía `.AI/.SKILLS/testing/org_profile_gate.py`, sin dejarlo a la memoria. Origen:
+  el banner de zombie-killer-tray nunca llegó a la página de dev-bricks tras su publicación.
+
+### 1.0.0 (2026-06-18)
+- Creado el protocolo inicial de mantenimiento y publicación de repositorios.

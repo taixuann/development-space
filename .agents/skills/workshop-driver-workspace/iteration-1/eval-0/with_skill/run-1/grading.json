@@ -1,0 +1,6 @@
+{"expectations":[
+ {"text":"Routes to the small-tool track instead of the three phases.","passed":true,"evidence":"report.md: 'tier small tool (một CLI, một mục đích), không đi 3 phase'"},
+ {"text":"Asks what the first version leaves out or proposes a short brainstorming.","passed":true,"evidence":"report.md: 'Chạy brainstorming ngắn: tool làm gì, lưu ở đâu, lệnh nào, phiên bản đầu bỏ lại cái gì'"},
+ {"text":"Does not claim that any artifact already exists.","passed":true,"evidence":"report.md: 'Chưa có thư mục tool. Chưa có artifact nào.'"}
+],
+"summary":{"passed":3,"failed":0,"total":3,"pass_rate":1.0}}

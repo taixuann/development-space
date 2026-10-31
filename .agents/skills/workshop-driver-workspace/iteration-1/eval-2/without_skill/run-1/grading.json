@@ -1,0 +1,7 @@
+{"expectations":[
+ {"text":"States that no design doc exists (docs/superpowers/specs is empty).","passed":false,"evidence":"report.md only praises plans; never mentions specs"},
+ {"text":"Identifies missing spikes and missing ADRs.","passed":false,"evidence":"report.md mentions neither spikes nor ADRs"},
+ {"text":"Next step is reading the code or writing the design doc, not building.","passed":false,"evidence":"report.md: 'bắt đầu Phase 3: build và verify'"},
+ {"text":"Does not claim Phase 3 or completion.","passed":false,"evidence":"report.md proposes starting Phase 3"}
+],
+"summary":{"passed":0,"failed":4,"total":4,"pass_rate":0.0}}

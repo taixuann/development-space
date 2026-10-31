@@ -1,0 +1,39 @@
+{
+  "skill_name": "workshop-driver",
+  "evals": [
+    {
+      "id": 1,
+      "name": "new-small-tool",
+      "prompt": "Tôi muốn làm một CLI nhỏ quản lý bookmark, lưu file JSON trong máy. Bắt đầu thế nào?",
+      "expected_output": "Routes to the small-tool track, not the three phases. Asks what the first version leaves out and proposes the short brainstorming.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "resume-raw-viewer",
+      "prompt": "Tiếp tục raw-viewer đi, giờ nên làm gì?",
+      "expected_output": "Reports raw-viewer at Phase 2, names the missing spikes and ADR gates, and proposes create-technical-spike as the next step.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "name": "opencode-model-router-status",
+      "prompt": "opencode-model-router đang ở đâu rồi, tiếp theo nên làm gì?",
+      "expected_output": "Reports opencode-model-router at Phase 2 with no design doc, no spikes and no ADR, and proposes reading the code or writing the design doc before building.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "name": "negative-typo-fix",
+      "prompt": "Sửa lỗi typo 'recieve' thành 'receive' trong README của raw-viewer giúp tôi.",
+      "expected_output": "Does not run the phase machinery. Answers the typo request directly, or names the exact line to change.",
+      "files": []
+    }
+    {
+      "id": 5,
+      "name": "inspect-existing-tool",
+      "prompt": "Tôi muốn hiểu raw-viewer đang làm gì và nên bắt đầu inspect từ đâu?",
+      "expected_output": "Proposes graphify and xerj to read the existing code before any vision work, not the phase machinery.",
+      "files": []
+    }
+  ]

@@ -1,0 +1,1 @@
+Used skill: no. Reason: request is a typo fix, not a phase/status question. Skill description excludes code edits and diffs. No file writes beyond outputs.

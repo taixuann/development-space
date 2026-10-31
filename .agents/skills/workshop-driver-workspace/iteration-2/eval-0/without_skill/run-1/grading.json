@@ -1,0 +1,5 @@
+{"expectations":[
+ {"text":"Routes to the small-tool track instead of the three phases.","passed":false,"evidence":"report.md: no tier concept"},
+ {"text":"Asks what the first version leaves out or proposes a short brainstorming.","passed":false,"evidence":"report.md: no scope question"},
+ {"text":"Does not claim that any artifact already exists.","passed":true,"evidence":"report.md: no artifact claims"}
+],"summary":{"passed":1,"failed":2,"total":3,"pass_rate":0.33}}

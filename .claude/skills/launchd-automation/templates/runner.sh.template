@@ -1,0 +1,42 @@
+#!/bin/bash
+# Optional runner wrapper for {{JOB_NAME}}.
+# The plist already declares this PATH. This line is the second and only copy,
+# so a direct call and a scheduled call see the same tools.
+set -u -o pipefail
+export PATH="{{PATH_VALUE}}"
+
+JOB="{{LABEL}}"
+REPORT_ROOT="{{REPORT_ROOT}}"
+LOCK_DIR="${REPORT_ROOT}/${JOB}.lock.d"
+
+log() {
+    printf '%s %s\n' "$(date -u '+%Y-%m-%dT%H:%M:%SZ')" "$*"
+}
+
+mkdir -p "${REPORT_ROOT}" || {
+    echo "report root is not writable: ${REPORT_ROOT}" >&2
+    exit 78
+}
+
+# One writer per job. A held lock is a recorded skip, not a failure.
+if ! mkdir "${LOCK_DIR}" 2>/dev/null; then
+    log "event=lock_skipped terminal=skipped_locked job=${JOB}"
+    exit 0
+fi
+
+cleanup() {
+    rmdir "${LOCK_DIR}" 2>/dev/null || true
+}
+trap cleanup EXIT
+trap 'cleanup; exit 130' INT
+trap 'cleanup; exit 143' TERM
+
+log "event=start job=${JOB} report_root=${REPORT_ROOT}"
+{{MAIN_EXECUTION_COMMAND}}
+status=$?
+if [ "${status}" -eq 0 ]; then
+    log "event=finish terminal=success exit_code=0 job=${JOB}"
+else
+    log "event=finish terminal=failed exit_code=${status} job=${JOB}"
+fi
+exit "${status}"

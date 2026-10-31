@@ -1,0 +1,10 @@
+{
+  "eval_id": 0,
+  "eval_name": "new-small-tool",
+  "prompt": "Tôi muốn làm một CLI nhỏ quản lý bookmark, lưu file JSON trong máy. Bắt đầu thế nào?",
+  "assertions": [
+    "Routes to the small-tool track instead of the three phases.",
+    "Asks what the first version leaves out or proposes a short brainstorming.",
+    "Does not claim that any artifact already exists."
+  ]
+}

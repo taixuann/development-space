@@ -1,0 +1,4 @@
+{"expectations":[
+ {"text":"Proposes graphify and xerj to read the existing code before any vision work.","passed":false,"evidence":"report.md: only README/AGENTS.md"},
+ {"text":"Does not run the phase machinery (no gate list / no phase report).","passed":true,"evidence":"report.md: no phase machinery"}
+],"summary":{"passed":1,"failed":1,"total":2,"pass_rate":0.5}}

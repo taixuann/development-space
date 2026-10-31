@@ -1,0 +1,12 @@
+{
+  "eval_id": 1,
+  "eval_name": "resume-raw-viewer",
+  "prompt": "Tiếp tục raw-viewer đi, giờ nên làm gì?",
+  "assertions": [
+    "Names the tool raw-viewer.",
+    "Reports Phase 2 (detect, prove, plan).",
+    "Identifies missing spikes and missing ADRs.",
+    "Next step names create-technical-spike (a skill that exists on disk).",
+    "Does not claim the project is done."
+  ]
+}

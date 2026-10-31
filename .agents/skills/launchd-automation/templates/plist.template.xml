@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- Label is read from these contents, never from the filename. -->
+    <key>Label</key>
+    <string>{{LABEL}}</string>
+
+    <!-- Absolute program path. Add a wrapper only when it does work the job needs. -->
+    <key>ProgramArguments</key>
+    <array>
+{{PROGRAM_ARGUMENTS}}
+    </array>
+
+    <!-- The job declares the environment it needs. It loads no other file. -->
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>{{PATH_VALUE}}</string>
+        <key>HOME</key>
+        <string>{{HOME_DIR}}</string>
+        <key>LANG</key>
+        <string>en_US.UTF-8</string>
+    </dict>
+
+    <!-- Runtime reports live under the report root, outside this source folder. -->
+    <key>StandardOutPath</key>
+    <string>{{STDOUT_LOG}}</string>
+
+    <key>StandardErrorPath</key>
+    <string>{{STDERR_LOG}}</string>
+
+    <key>ProcessType</key>
+    <string>Background</string>
+
+    <key>LowPriorityIO</key>
+    <true/>
+{{RUN_AT_LOAD_BLOCK}}
+{{SCHEDULE_BLOCK}}
+</dict>
+</plist>

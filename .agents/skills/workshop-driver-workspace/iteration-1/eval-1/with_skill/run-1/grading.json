@@ -1,0 +1,8 @@
+{"expectations":[
+ {"text":"Names the tool raw-viewer.","passed":true,"evidence":"report.md heading 'raw-viewer (research)'"},
+ {"text":"Reports Phase 2 (detect, prove, plan).","passed":true,"evidence":"report.md: 'Phase 2 — detect, prove, plan'"},
+ {"text":"Identifies missing spikes and missing ADRs.","passed":true,"evidence":"report.md lists both missing artifact gates"},
+ {"text":"Next step names create-technical-spike (a skill that exists on disk).","passed":true,"evidence":"report.md: 'create-technical-spike'"},
+ {"text":"Does not claim the project is done.","passed":true,"evidence":"report.md keeps manual gates unconfirmed"}
+],
+"summary":{"passed":5,"failed":0,"total":5,"pass_rate":1.0}}

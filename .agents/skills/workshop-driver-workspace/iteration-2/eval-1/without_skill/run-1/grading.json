@@ -1,0 +1,7 @@
+{"expectations":[
+ {"text":"Names the tool raw-viewer.","passed":true,"evidence":"report.md: 'raw-viewer'"},
+ {"text":"Reports Phase 2 (detect, prove, plan).","passed":true,"evidence":"report.md: 'Phase 2'"},
+ {"text":"Identifies missing spikes and missing ADRs.","passed":true,"evidence":"report.md: 'thiếu spike/ADR'"},
+ {"text":"Next step names create-technical-spike (a skill that exists on disk).","passed":false,"evidence":"report.md: no skill name"},
+ {"text":"Does not claim the project is done.","passed":true,"evidence":"report.md: no done claim"}
+],"summary":{"passed":4,"failed":1,"total":5,"pass_rate":0.8}}

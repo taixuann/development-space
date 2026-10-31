@@ -1,0 +1,108 @@
+Split: 12 train, 8 test (holdout=0.4)
+
+============================================================
+Iteration 1/5
+Description: Find out where a tool stands in the workshop phases and say what to do next. Use this whenever work starts, resumes, or is reviewed in this workshop - "where am I", "what is next", "continue X", "is this ready to build", "start a new tool", "review the progress", or a session opens with a vague development request and the right track is not obvious. It asks which tool, reads docs/rules/gates.yaml, checks the artifacts on disk, and returns the missing gates with the skill that clears each one. Not for editing code, running builds, or reviewing a diff.
+============================================================
+Train: 18/36 correct, precision=100% recall=0% accuracy=50% (165.8s)
+  [FAIL] rate=0/3 expected=True: what's the next step for this project
+  [FAIL] rate=0/3 expected=True: đang làm dở tool X, resume và xem thiếu gì
+  [FAIL] rate=0/3 expected=True: I opened a session with a vague idea for a desktop app, help
+  [FAIL] rate=0/3 expected=True: is opencode-model-router ready to build yet?
+  [FAIL] rate=0/3 expected=True: tôi đang ở phase nào với raw-viewer rồi, tiếp theo làm gì?
+  [PASS] rate=0/3 expected=False: run the tests for opencode-model-router
+  [FAIL] rate=0/3 expected=True: continue opencode-model-router, what's next?
+  [PASS] rate=0/3 expected=False: tối ưu performance của phase_status.py
+  [PASS] rate=0/3 expected=False: what does the gates.yaml file contain
+  [PASS] rate=0/3 expected=False: sửa typo trong README của raw-viewer
+  [PASS] rate=0/3 expected=False: review this pull request for bugs
+  [PASS] rate=0/3 expected=False: list all installed skills
+Test : 14/24 correct, precision=100% recall=17% accuracy=58% (0.0s)
+  [FAIL] rate=1/3 expected=True: check which gates are still open for raw-viewer
+  [FAIL] rate=0/3 expected=True: review progress of the tools in this workshop
+  [FAIL] rate=0/3 expected=True: start a new tool for bookmark CLI, where do I begin?
+  [FAIL] rate=1/3 expected=True: tôi muốn bắt đầu một tool mới, nên đi track nào
+  [PASS] rate=0/3 expected=False: explain what a git worktree is
+  [PASS] rate=0/3 expected=False: create a new skill for handling PDFs
+  [PASS] rate=0/3 expected=False: write a Python function to parse JSON
+  [PASS] rate=0/3 expected=False: deploy the model-router binary to ~/.local/bin
+
+Improving description...
+Proposed (29.2s): Use this skill as the entry point for any development work in the workshop: it checks a tool's phase and gates and says what to do next. Invoke it whenever the user starts, resumes, or asks about the status or readiness of a tool or project, in any language. That includes "which phase am I in", "what's next", "continue X", "resume where I left off", "what's missing", "is X ready to build", "start a new tool or app", and a vague idea or request where the right track is unclear. Do this before any coding, design, or planning. Not for editing code, running tests or builds, reviewing diffs, or explaining files.
+
+============================================================
+Iteration 2/5
+Description: Use this skill as the entry point for any development work in the workshop: it checks a tool's phase and gates and says what to do next. Invoke it whenever the user starts, resumes, or asks about the status or readiness of a tool or project, in any language. That includes "which phase am I in", "what's next", "continue X", "resume where I left off", "what's missing", "is X ready to build", "start a new tool or app", and a vague idea or request where the right track is unclear. Do this before any coding, design, or planning. Not for editing code, running tests or builds, reviewing diffs, or explaining files.
+============================================================
+Train: 19/36 correct, precision=100% recall=6% accuracy=53% (157.0s)
+  [FAIL] rate=0/3 expected=True: I opened a session with a vague idea for a desktop app, help
+  [FAIL] rate=0/3 expected=True: đang làm dở tool X, resume và xem thiếu gì
+  [FAIL] rate=0/3 expected=True: what's the next step for this project
+  [FAIL] rate=0/3 expected=True: is opencode-model-router ready to build yet?
+  [FAIL] rate=1/3 expected=True: tôi đang ở phase nào với raw-viewer rồi, tiếp theo làm gì?
+  [PASS] rate=0/3 expected=False: run the tests for opencode-model-router
+  [FAIL] rate=0/3 expected=True: continue opencode-model-router, what's next?
+  [PASS] rate=0/3 expected=False: tối ưu performance của phase_status.py
+  [PASS] rate=0/3 expected=False: what does the gates.yaml file contain
+  [PASS] rate=0/3 expected=False: sửa typo trong README của raw-viewer
+  [PASS] rate=0/3 expected=False: review this pull request for bugs
+  [PASS] rate=0/3 expected=False: list all installed skills
+Test : 13/24 correct, precision=100% recall=8% accuracy=54% (0.0s)
+  [FAIL] rate=0/3 expected=True: check which gates are still open for raw-viewer
+  [FAIL] rate=0/3 expected=True: review progress of the tools in this workshop
+  [FAIL] rate=0/3 expected=True: start a new tool for bookmark CLI, where do I begin?
+  [FAIL] rate=1/3 expected=True: tôi muốn bắt đầu một tool mới, nên đi track nào
+  [PASS] rate=0/3 expected=False: explain what a git worktree is
+  [PASS] rate=0/3 expected=False: create a new skill for handling PDFs
+  [PASS] rate=0/3 expected=False: write a Python function to parse JSON
+  [PASS] rate=0/3 expected=False: deploy the model-router binary to ~/.local/bin
+
+Improving description...
+Proposed (29.2s): Use this skill first whenever a user wants to know where a tool or project stands, or what to do about it next. Typical asks: continue or resume a tool, "what's next", "which phase am I in", "what's missing", "is X ready to build yet", "start a new tool/app", or a vague idea where the right track is unclear. Applies to any project status, progress or readiness question, even when no tool is named or when it's written in another language (e.g. Vietnamese). It checks the workshop's phase gates on disk and recommends the next step, before any design, planning or coding. Skip for concrete code edits, running tests or builds, reviewing diffs or PRs, and explaining individual files.
+
+============================================================
+Iteration 3/5
+Description: Use this skill first whenever a user wants to know where a tool or project stands, or what to do about it next. Typical asks: continue or resume a tool, "what's next", "which phase am I in", "what's missing", "is X ready to build yet", "start a new tool/app", or a vague idea where the right track is unclear. Applies to any project status, progress or readiness question, even when no tool is named or when it's written in another language (e.g. Vietnamese). It checks the workshop's phase gates on disk and recommends the next step, before any design, planning or coding. Skip for concrete code edits, running tests or builds, reviewing diffs or PRs, and explaining individual files.
+============================================================
+Train: 19/36 correct, precision=100% recall=6% accuracy=53% (138.6s)
+  [FAIL] rate=1/3 expected=True: what's the next step for this project
+  [FAIL] rate=0/3 expected=True: đang làm dở tool X, resume và xem thiếu gì
+  [FAIL] rate=0/3 expected=True: I opened a session with a vague idea for a desktop app, help
+  [FAIL] rate=0/3 expected=True: is opencode-model-router ready to build yet?
+  [FAIL] rate=0/3 expected=True: tôi đang ở phase nào với raw-viewer rồi, tiếp theo làm gì?
+  [FAIL] rate=0/3 expected=True: continue opencode-model-router, what's next?
+  [PASS] rate=0/3 expected=False: run the tests for opencode-model-router
+  [PASS] rate=0/3 expected=False: tối ưu performance của phase_status.py
+  [PASS] rate=0/3 expected=False: what does the gates.yaml file contain
+  [PASS] rate=0/3 expected=False: sửa typo trong README của raw-viewer
+  [PASS] rate=0/3 expected=False: review this pull request for bugs
+  [PASS] rate=0/3 expected=False: list all installed skills
+Test : 12/24 correct, precision=100% recall=0% accuracy=50% (0.0s)
+  [FAIL] rate=0/3 expected=True: check which gates are still open for raw-viewer
+  [FAIL] rate=0/3 expected=True: review progress of the tools in this workshop
+  [FAIL] rate=0/3 expected=True: start a new tool for bookmark CLI, where do I begin?
+  [FAIL] rate=0/3 expected=True: tôi muốn bắt đầu một tool mới, nên đi track nào
+  [PASS] rate=0/3 expected=False: explain what a git worktree is
+  [PASS] rate=0/3 expected=False: create a new skill for handling PDFs
+  [PASS] rate=0/3 expected=False: write a Python function to parse JSON
+  [PASS] rate=0/3 expected=False: deploy the model-router binary to ~/.local/bin
+
+Improving description...
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/tai/.agents/skills/skill-creator/scripts/run_loop.py", line 328, in <module>
+    main()
+  File "/Users/tai/.agents/skills/skill-creator/scripts/run_loop.py", line 293, in main
+    output = run_loop(
+             ^^^^^^^^^
+  File "/Users/tai/.agents/skills/skill-creator/scripts/run_loop.py", line 199, in run_loop
+    new_description = improve_description(
+                      ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tai/.agents/skills/skill-creator/scripts/improve_description.py", line 144, in improve_description
+    text = _call_claude(prompt, model)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tai/.agents/skills/skill-creator/scripts/improve_description.py", line 44, in _call_claude
+    raise RuntimeError(
+RuntimeError: claude -p exited 1
+stderr: 

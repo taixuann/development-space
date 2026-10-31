@@ -1,0 +1,4 @@
+{"expectations":[
+ {"text":"Proposes graphify and xerj to read the existing code before any vision work.","passed":true,"evidence":"report.md: 'graphify (update .) + xerj'"},
+ {"text":"Does not run the phase machinery (no gate list / no phase report).","passed":true,"evidence":"report.md: 'Không chạy phase machinery'"}
+],"summary":{"passed":2,"failed":0,"total":2,"pass_rate":1.0}}

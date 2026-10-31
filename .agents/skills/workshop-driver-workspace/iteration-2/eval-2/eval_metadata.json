@@ -1,0 +1,11 @@
+{
+  "eval_id": 2,
+  "eval_name": "opencode-model-router-status",
+  "prompt": "opencode-model-router đang ở đâu rồi, tiếp theo nên làm gì?",
+  "assertions": [
+    "States that no design doc exists (docs/superpowers/specs is empty).",
+    "Identifies missing spikes and missing ADRs.",
+    "Next step is reading the code or writing the design doc, not building.",
+    "Does not claim Phase 3 or completion."
+  ]
+}

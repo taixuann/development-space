@@ -1,0 +1,417 @@
+{
+  "metadata": {
+    "skill_name": "workshop-driver",
+    "skill_path": "<path/to/skill>",
+    "executor_model": "<model-name>",
+    "analyzer_model": "<model-name>",
+    "timestamp": "2026-10-30T09:21:29Z",
+    "evals_run": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "runs_per_configuration": 3
+  },
+  "runs": [
+    {
+      "eval_id": 0,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 0.0,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Routes to the small-tool track instead of the three phases.",
+          "passed": true,
+          "evidence": "report.md: 'tier small tool, kh\u00f4ng 3 phase'"
+        },
+        {
+          "text": "Asks what the first version leaves out or proposes a short brainstorming.",
+          "passed": true,
+          "evidence": "report.md: 'brainstorming ng\u1eafn'"
+        },
+        {
+          "text": "Does not claim that any artifact already exists.",
+          "passed": true,
+          "evidence": "report.md: no artifact claims"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 0.0,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Names the tool raw-viewer.",
+          "passed": true,
+          "evidence": "report.md: 'raw-viewer'"
+        },
+        {
+          "text": "Reports Phase 2 (detect, prove, plan).",
+          "passed": true,
+          "evidence": "report.md: 'Phase 2'"
+        },
+        {
+          "text": "Identifies missing spikes and missing ADRs.",
+          "passed": true,
+          "evidence": "report.md: 'spike', 'ADR'"
+        },
+        {
+          "text": "Next step names create-technical-spike (a skill that exists on disk).",
+          "passed": true,
+          "evidence": "report.md: 'create-technical-spike'"
+        },
+        {
+          "text": "Does not claim the project is done.",
+          "passed": true,
+          "evidence": "report.md keeps manual gates"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 0.0,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "States that no design doc exists (docs/superpowers/specs is empty).",
+          "passed": true,
+          "evidence": "report.md: 'Design doc file missing'"
+        },
+        {
+          "text": "Identifies missing spikes and missing ADRs.",
+          "passed": true,
+          "evidence": "report.md: 'spike', 'ADR'"
+        },
+        {
+          "text": "Next step is reading the code or writing the design doc, not building.",
+          "passed": true,
+          "evidence": "report.md: 'codebase-design tr\u01b0\u1edbc'"
+        },
+        {
+          "text": "Does not claim Phase 3 or completion.",
+          "passed": true,
+          "evidence": "report.md: 'Kh\u00f4ng build'"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 0.0,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Does not produce a phase status report.",
+          "passed": true,
+          "evidence": "report.md: 'Skill kh\u00f4ng \u00e1p d\u1ee5ng'"
+        },
+        {
+          "text": "Addresses the typo request (reports the line or that it is absent).",
+          "passed": true,
+          "evidence": "report.md: grep no 'recieve'"
+        },
+        {
+          "text": "Does not modify any file.",
+          "passed": true,
+          "evidence": "report.md: 'Kh\u00f4ng s\u1eeda file'"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 4,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 2,
+        "failed": 0,
+        "total": 2,
+        "time_seconds": 0.0,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Proposes graphify and xerj to read the existing code before any vision work.",
+          "passed": true,
+          "evidence": "report.md: 'graphify (update .) + xerj'"
+        },
+        {
+          "text": "Does not run the phase machinery (no gate list / no phase report).",
+          "passed": true,
+          "evidence": "report.md: 'Kh\u00f4ng ch\u1ea1y phase machinery'"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 0,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.33,
+        "passed": 1,
+        "failed": 2,
+        "total": 3,
+        "time_seconds": 0.0,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Routes to the small-tool track instead of the three phases.",
+          "passed": false,
+          "evidence": "report.md: no tier concept"
+        },
+        {
+          "text": "Asks what the first version leaves out or proposes a short brainstorming.",
+          "passed": false,
+          "evidence": "report.md: no scope question"
+        },
+        {
+          "text": "Does not claim that any artifact already exists.",
+          "passed": true,
+          "evidence": "report.md: no artifact claims"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.8,
+        "passed": 4,
+        "failed": 1,
+        "total": 5,
+        "time_seconds": 0.0,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Names the tool raw-viewer.",
+          "passed": true,
+          "evidence": "report.md: 'raw-viewer'"
+        },
+        {
+          "text": "Reports Phase 2 (detect, prove, plan).",
+          "passed": true,
+          "evidence": "report.md: 'Phase 2'"
+        },
+        {
+          "text": "Identifies missing spikes and missing ADRs.",
+          "passed": true,
+          "evidence": "report.md: 'thi\u1ebfu spike/ADR'"
+        },
+        {
+          "text": "Next step names create-technical-spike (a skill that exists on disk).",
+          "passed": false,
+          "evidence": "report.md: no skill name"
+        },
+        {
+          "text": "Does not claim the project is done.",
+          "passed": true,
+          "evidence": "report.md: no done claim"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.0,
+        "passed": 0,
+        "failed": 4,
+        "total": 4,
+        "time_seconds": 0.0,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "States that no design doc exists (docs/superpowers/specs is empty).",
+          "passed": false,
+          "evidence": "report.md: praises plans, no specs mention"
+        },
+        {
+          "text": "Identifies missing spikes and missing ADRs.",
+          "passed": false,
+          "evidence": "report.md: no spikes/ADRs"
+        },
+        {
+          "text": "Next step is reading the code or writing the design doc, not building.",
+          "passed": false,
+          "evidence": "report.md: 'b\u1eaft \u0111\u1ea7u Phase 3 build'"
+        },
+        {
+          "text": "Does not claim Phase 3 or completion.",
+          "passed": false,
+          "evidence": "report.md: proposes Phase 3"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 0.0,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Does not produce a phase status report.",
+          "passed": true,
+          "evidence": "report.md: direct answer"
+        },
+        {
+          "text": "Addresses the typo request (reports the line or that it is absent).",
+          "passed": true,
+          "evidence": "report.md: grep no 'recieve'"
+        },
+        {
+          "text": "Does not modify any file.",
+          "passed": true,
+          "evidence": "report.md: 'Kh\u00f4ng s\u1eeda file'"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 4,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.5,
+        "passed": 1,
+        "failed": 1,
+        "total": 2,
+        "time_seconds": 0.0,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Proposes graphify and xerj to read the existing code before any vision work.",
+          "passed": false,
+          "evidence": "report.md: only README/AGENTS.md"
+        },
+        {
+          "text": "Does not run the phase machinery (no gate list / no phase report).",
+          "passed": true,
+          "evidence": "report.md: no phase machinery"
+        }
+      ],
+      "notes": []
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 0.0,
+        "stddev": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "tokens": {
+        "mean": 0.0,
+        "stddev": 0.0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    "without_skill": {
+      "pass_rate": {
+        "mean": 0.526,
+        "stddev": 0.3923,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 0.0,
+        "stddev": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "tokens": {
+        "mean": 0.0,
+        "stddev": 0.0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    "delta": {
+      "pass_rate": "+0.47",
+      "time_seconds": "+0.0",
+      "tokens": "+0"
+    }
+  },
+  "notes": []
+}

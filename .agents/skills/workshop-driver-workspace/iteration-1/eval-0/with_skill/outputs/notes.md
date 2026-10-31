@@ -1,0 +1,1 @@
+Used skill: yes. Steps 0-1 and 5 of SKILL.md. No Step 2 (no tool dir yet). No file writes beyond outputs.

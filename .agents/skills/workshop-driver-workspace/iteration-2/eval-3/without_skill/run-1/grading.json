@@ -1,0 +1,5 @@
+{"expectations":[
+ {"text":"Does not produce a phase status report.","passed":true,"evidence":"report.md: direct answer"},
+ {"text":"Addresses the typo request (reports the line or that it is absent).","passed":true,"evidence":"report.md: grep no 'recieve'"},
+ {"text":"Does not modify any file.","passed":true,"evidence":"report.md: 'Không sửa file'"}
+],"summary":{"passed":3,"failed":0,"total":3,"pass_rate":1.0}}
